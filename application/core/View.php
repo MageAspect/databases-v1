@@ -8,6 +8,7 @@
 namespace application\core;
 
 
+use application\core\entity\Page;
 use application\core\exception\RenderException;
 
 
@@ -21,18 +22,23 @@ class View {
         $title = $page->title;
         $pageData = $page->data;
 
-        if (!file_exists($page->headerFile)) {
+        if (!empty($page->headerFile) && !file_exists($page->headerFile)) {
             throw new RenderException('Header файл: ' . $page->headerFile . ' не найден!');
+        } elseif (!empty($page->headerFile)) {
+            require $page->headerFile;
         }
-        if (!file_exists($page->contentFile)) {
-            throw new RenderException('Сontent файл: ' . $page->contentFile . ' не найден!');
+
+        if (!empty($page->contentFile) && !file_exists($page->contentFile)) {
+            throw new RenderException('Content файл: ' . $page->contentFile . ' не найден!');
+        } elseif (!empty($page->contentFile)) {
+            require $page->contentFile;
         }
-        if (!file_exists($page->footerFile)) {
+
+        if (!empty($page->footerFile) && !file_exists($page->footerFile)) {
             throw new RenderException('Footer файл: ' . $page->footerFile . ' не найден!');
+        } elseif (!empty($page->footerFile)) {
+            require $page->footerFile;
         }
-        require $page->headerFile;
-        require $page->contentFile;
-        require $page->footerFile;
     }
 
     public function redirect($url) {

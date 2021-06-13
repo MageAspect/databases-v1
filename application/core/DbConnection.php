@@ -8,7 +8,7 @@ use PDO;
 
 
 class DbConnection {
-    private static PDO $dbConnection;
+    protected static PDO $dbConnection;
 
     public static function getConnection(): PDO {
 

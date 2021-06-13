@@ -9,6 +9,12 @@ class Route {
     public string $controllerClass = '';
     public string $actionName = '';
 
-    /** @var array переменные марштура, заданные в шаблоне марштура через regex */
+    /** Переменные марштура, заданные в шаблоне марштура через regex */
     public array $variables = array();
+
+    public function __construct($template, $controllerClass, $actionName) {
+        $this->template = $template;
+        $this->controllerClass = $controllerClass;
+        $this->actionName = $actionName;
+    }
 }

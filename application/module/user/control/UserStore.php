@@ -10,6 +10,8 @@ namespace application\module\user\control;
 
 use application\core\Db;
 use application\core\exception\DbQueryException;
+use application\module\user\control\exception\UserNotFoundException;
+use application\module\user\control\exception\UserStoreException;
 use application\module\user\entity\User;
 
 
@@ -28,7 +30,7 @@ class UserStore {
     public function getUserByLogin(string $login): User {
         try {
             $dbUser = $this->db->query(
-                    "SELECT id, login, email, `password` FROM users WHERE login = :login",
+                    "SELECT id, login, hashed_password, email, name, last_name, patronymic, is_admin FROM users WHERE login = :login",
                     array('login' => $login)
             );
             $userInfo = $dbUser->fetch();
@@ -40,8 +42,12 @@ class UserStore {
 
             $user->id = $userInfo['id'];
             $user->email = $userInfo['email'];
-            $user->hashedPassword = $userInfo['password'];
+            $user->hashedPassword = $userInfo['hashed_password'];
             $user->login = $userInfo['login'];
+            $user->name = $userInfo['name'];
+            $user->lastName = $userInfo['last_name'];
+            $user->patronymic = $userInfo['patronymic'];
+            $user->isAdmin = $userInfo['is_admin'];
             return $user;
         } catch (DbQueryException $ex) {
             throw new UserStoreException('Ошибка получения пользователя из базы данных', 0, $ex);

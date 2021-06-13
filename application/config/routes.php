@@ -1,32 +1,18 @@
 <?php
 
+use application\core\entity\Route;
+use application\module\user\controller\AuthController;
+
+
 return array(
-        '#^?#' => array(
-                'controller' => \application\controller\AuthController::class,
-                'action' => 'logInAction'
+        new Route(
+                '#^$#',
+                 AuthController::class,
+                 'logInAction'
         ),
-        'form' => array(
-                'controller' => \application\controller\FeedBackController::class,
-                'action' => 'addFeedBackAction'
+        new Route(
+                '#^admin/form/(?P<id>\d+)/edit$#',
+                AuthController::class,
+                '123'
         ),
-        'admin' => array(
-                'controller' => \application\controller\AdminMainController::class,
-                'action' => 'indexAction'
-        ),
-        'admin/form' => array(
-                'controller' => \application\controller\AdminFeedBackController::class,
-                'action' => 'allFeedBacksAction'
-        ),
-        'admin/form/(?P<id>\d+)/edit' => array(
-                'controller' => \application\controller\AdminFeedBackController::class,
-                'action' => 'editFeedBackAction'
-        ),
-        'ajax/admin/feedbacks.get' => array(
-                'controller' => \application\controller\FeedBackAjaxController::class,
-                'action' => 'getAllFeedBacksAction'
-        ),
-        'ajax/admin/feedback.delete' => array(
-                'controller' => \application\controller\FeedBackAjaxController::class,
-                'action' => 'deleteFeedBackAction'
-        )
 );

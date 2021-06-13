@@ -1,14 +1,11 @@
 <?php
 
 
-namespace application\controller;
+namespace application\module\user\controller;
 
 
-use application\core\exception\ArgumentException;
 use application\core\exception\RenderException;
 use application\core\PublicController;
-use application\module\user\control\UserNotFoundException;
-use application\module\user\facade\IncorrectPasswordException;
 use application\module\user\facade\UserFacadeException;
 
 
@@ -30,20 +27,19 @@ class AuthController extends PublicController {
         $this->view->render($page);
     }
 
-    private function submit() {
+    protected function submit() {
         try {
             $fields = $this->getPreparedFields($_POST);
             if ($this->validateFields($fields, $this->dataToView['errors'])) {
-                if ($this->userFacade->authUser($fields['login'], $fields['password'])) {
-                    $this->view->redirect('/form/');
-                }
+                $this->userFacade->authUser($fields['login'], $fields['password']);
+                $this->view->redirect('/form/');
             }
-        } catch (ArgumentException | UserNotFoundException | IncorrectPasswordException | UserFacadeException $exception) {
-            $this->dataToView['errors'][] = $exception->getMessage();
+        } catch (UserFacadeException $e) {
+            $this->dataToView['errors'][] = $e->getMessage();
         }
     }
 
-    private function getPreparedFields(array $fields): array {
+    protected function getPreparedFields(array $fields): array {
         $newFields['login'] = $fields['login'] ?: '';
         $newFields['password'] = $fields['password'] ?: '';
         foreach ($newFields as $key => $value) {
@@ -54,7 +50,7 @@ class AuthController extends PublicController {
         return $newFields;
     }
 
-    private function validateFields(array $fields = array(), ?array &$outputErrors = array()): bool {
+    protected function validateFields(array $fields = array(), ?array &$outputErrors = array()): bool {
         $fields = array(
                 'login' => trim($fields['login']) ?: '',
                 'password' => $fields['password'] ?: '',

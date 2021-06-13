@@ -1,14 +1,14 @@
 <?php
 
 
-namespace application\core;
+namespace application\core\entity;
 
 
 class Page {
-    public int $responseCode;
-    public string $headerFile;
-    public string $title;
-    public array $data;
-    public string $contentFile;
-    public string $footerFile;
+    public int $responseCode = 0;
+    public string $headerFile = '';
+    public string $title = '';
+    public array $data = array();
+    public string $contentFile = '';
+    public string $footerFile = '';
 }

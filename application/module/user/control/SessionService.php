@@ -4,42 +4,58 @@
 namespace application\module\user\control;
 
 
+use application\module\user\control\exception\SessionServiceException;
+
+
 class SessionService {
 
-    public function set($key, $value): bool {
+    /**
+     * @throws SessionServiceException
+     */
+    public function set(string $key, $value): void {
         $this->start();
         $_SESSION[$key] = $value;
-        return $this->writeClose();
+        $this->writeClose();
     }
 
-    public function get($key) {
+    /**
+     * @throws SessionServiceException
+     */
+    public function get(string $key) {
         $this->start();
-        $res = $_SESSION[$key];
+        $res = $_SESSION[$key] ?? null;
         $this->writeClose();
 
         return $res;
     }
 
+    /**
+     * @throws SessionServiceException
+     */
     public function unset($key) {
         $this->start();
         unset($_SESSION[$key]);
         $this->writeClose();
     }
 
-    private function start() {
+    protected function start(): void {
         if (!$this->sessionExists()) {
             session_start();
         }
     }
 
-    private function writeClose(): bool {
-        if ($this->sessionExists()) {
-            return session_write_close();
+    /**
+     * @throws SessionServiceException
+     */
+    protected function writeClose(): void {
+        if ($this->sessionExists() && !session_write_close()) {
+            throw new SessionServiceException('Ошибка записи в сессию');
         }
-        return false;
     }
 
-    private function sessionExists(): bool {
+
+
+    protected function sessionExists(): bool {
         return session_status() != PHP_SESSION_NONE;
     }
 }

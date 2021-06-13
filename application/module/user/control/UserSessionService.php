@@ -8,6 +8,9 @@
 namespace application\module\user\control;
 
 
+use application\module\user\control\exception\SessionServiceException;
+use application\module\user\control\exception\SessionUserNotFoundException;
+use application\module\user\control\exception\UserSessionServiceException;
 use application\module\user\entity\User;
 
 
@@ -20,35 +23,43 @@ class UserSessionService {
 
     /**
      * @throws SessionUserNotFoundException
+     * @throws UserSessionServiceException
      */
-    public function getCurrent(): User {
-        $sessionUser = $this->sessionService->get('user');
+    public function getUser(): User {
+        try {
+            $sessionUser = $this->sessionService->get('user');
+        } catch (SessionServiceException $e) {
+            throw new UserSessionServiceException('Ошибка получения пользователя из сессии', 0, $e);
+        }
         if (empty($sessionUser)) {
             throw new SessionUserNotFoundException();
         }
 
-        $user = new User();
-        $user->id = $sessionUser['id'];
-        $user->email = $sessionUser['email'];
-        $user->login = $sessionUser['login'];
-        $user->hashedPassword = $sessionUser['hashedPassword'];
-
-        return $user;
+        return $sessionUser;
     }
 
+    /**
+     * @throws UserSessionServiceException
+     */
     public function isAuthorised(): bool {
-        return !empty($this->sessionService->get('user'));
+        try {
+            return !empty($this->sessionService->get('user'));
+        } catch (SessionServiceException $e) {
+            throw new UserSessionServiceException('Ошибка получения информации об авторизованности пользователя', 0, $e);
+        }
     }
 
-    public function setCurrent(User $user): bool {
-        return $this->sessionService->set(
-                'user',
-                array(
-                        'id' => $user->id,
-                        'login' => $user->login,
-                        'email' => $user->email,
-                        'hashedPassword' => $user->hashedPassword,
-                )
-        );
+    /**
+     * @throws UserSessionServiceException
+     */
+    public function setUser(User $user): void {
+        try {
+            $this->sessionService->set(
+                    'user',
+                    $user
+            );
+        } catch (SessionServiceException $e) {
+            throw new UserSessionServiceException('Ошибка записи пользователя в сессию', 0, $e);
+        }
     }
 }

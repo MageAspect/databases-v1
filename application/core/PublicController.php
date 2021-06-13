@@ -4,11 +4,12 @@
 namespace application\core;
 
 
-use application\module\user\control\SessionUserNotFoundException;
+use application\core\entity\Page;
 use application\module\user\facade\UserFacade;
+use application\module\user\facade\UserFacadeException;
 
 
-abstract class PublicController {
+abstract class PublicController extends Controller {
     protected View $view;
     protected UserFacade $userFacade;
     protected array $dataToView = array();
@@ -18,8 +19,8 @@ abstract class PublicController {
         $this->userFacade = $userFacade ?? new UserFacade();
 
         try {
-            $this->dataToView['system']['user'] = $this->userFacade->getUser();
-        } catch (SessionUserNotFoundException $e) {
+            $this->dataToView['system']['user'] = $this->userFacade->getSessionUser();
+        } catch (UserFacadeException $e) {
         }
     }
 

@@ -12,12 +12,12 @@
             <form action="" method="post">
                 <div class="fieldset">
                     <input id="login" type="text" name="login"
-                           value="<?= htmlspecialchars($_POST['login'], ENT_QUOTES) ?: '' ?>" required>
+                           value="<?= htmlspecialchars($_POST['login'] ?? '', ENT_QUOTES) ?: '' ?>">
                     <label class="movable" for="login">Логин</label>
                 </div>
 
                 <div class="fieldset">
-                    <input id="password" type="password" name="password" required>
+                    <input id="password" type="password" name="password">
                     <label class="movable" for="password">Пароль</label>
 
                 </div>

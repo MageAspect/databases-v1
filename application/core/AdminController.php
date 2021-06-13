@@ -4,12 +4,14 @@
 namespace application\core;
 
 
+use application\core\entity\Page;
 use application\module\user\facade\AuthException;
 use application\module\user\facade\UserFacade;
+use application\module\user\facade\UserFacadeException;
 use Exception;
 
 
-abstract class AdminController {
+abstract class AdminController extends Controller {
     protected View $view;
     protected UserFacade $userFacade;
     protected array $dataToView = array();
@@ -21,12 +23,14 @@ abstract class AdminController {
         $this->view = $view ?? new View();
         $this->userFacade = $userFacade ?? new UserFacade();
 
-        if (!$this->userFacade->isAuthorisedUser()) {
+        try {
+            $this->userFacade->isAuthorisedUser();
+        } catch (UserFacadeException $e) {
             throw new AuthException();
         }
 
         try {
-            $this->dataToView['system']['user'] = $this->userFacade->getUser();
+            $this->dataToView['system']['user'] = $this->userFacade->getSessionUser();
         } catch (Exception $e) {
             throw new AuthException();
         }

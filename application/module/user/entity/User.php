@@ -9,4 +9,8 @@ class User {
     public string $login;
     public string $email;
     public string $hashedPassword;
+    public string $name;
+    public string $lastName;
+    public string $patronymic;
+    public string $isAdmin;
 }

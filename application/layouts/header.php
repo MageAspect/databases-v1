@@ -16,15 +16,15 @@
 <body>
 <div class="menu-wrapper">
     <div class="logo">
-        <a href="/">INTERLABA</a>
+        <a href="/">VOLSU TASK</a>
     </div>
     <div class="menu">
         <div class="menu-items">
             <a href="/">Aвторизация</a>
             <a href="/form/">Обратная связь</a>
-            <? if (!empty($user['login'])) : ?>
+            <?php if (!empty($user['login'])) : ?>
                 <a href="/admin/">Админка</a>
-            <? endif; ?>
+            <?php endif; ?>
         </div>
 
     </div>
