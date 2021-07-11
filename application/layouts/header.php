@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap&subset=cyrillic" rel="stylesheet">
     <link rel="stylesheet" href="/public/assets/css/main.css">
-    <link rel="icon" href="/public/assets/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/public/img/favicon.ico" type="image/x-icon">
     <title><?= htmlspecialchars($title, ENT_QUOTES) ?></title>
 </head>
 <body>

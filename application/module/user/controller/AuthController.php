@@ -16,6 +16,7 @@ class AuthController extends PublicController {
      */
     public function logInAction() {
         $page = $this->getDefaultPage();
+        $page->headerFile = $_SERVER['DOCUMENT_ROOT'] . '/application/layouts/authHeader.php';
         $page->title = 'Авторизация';
         $page->contentFile = dirname(__DIR__) . '/pages/auth.php';
 
