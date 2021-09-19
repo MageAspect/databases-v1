@@ -1,8 +1,6 @@
 <?php
 
-/**
- * @author Mark Prohorov <mark@intervolga.ru>
- */
+
 
 
 namespace application\core;
@@ -19,13 +17,19 @@ class View {
      * @throws RenderException
      */
     public function render(Page $page) {
-        $title = $page->title;
-        $pageData = $page->data;
+        $PAGE_TITLE = $page->title;
+        $PAGE_DATA = $page->data;
 
         if (!empty($page->headerFile) && !file_exists($page->headerFile)) {
             throw new RenderException('Header файл: ' . $page->headerFile . ' не найден!');
         } elseif (!empty($page->headerFile)) {
             require $page->headerFile;
+        }
+
+        if (!empty($page->sidebarFile) && !file_exists($page->sidebarFile)) {
+            throw new RenderException('Sidebar файл: ' . $page->sidebarFile . ' не найден!');
+        } elseif (!empty($page->sidebarFile)) {
+            require $page->sidebarFile;
         }
 
         if (!empty($page->contentFile) && !file_exists($page->contentFile)) {

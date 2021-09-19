@@ -4,19 +4,29 @@
 namespace application\module\user\controller;
 
 
+use application\core\Controller;
+use application\core\entity\Page;
 use application\core\exception\RenderException;
-use application\core\PublicController;
+use application\core\View;
+use application\module\user\facade\UserFacade;
 use application\module\user\facade\UserFacadeException;
 
 
-class AuthController extends PublicController {
+class AuthController extends Controller {
+    private View $view;
+    private array $dataToView = array();
+    private UserFacade $userFacade;
+
+    public function __construct() {
+        $this->view = new View();
+        $this->userFacade = new UserFacade();
+    }
 
     /**
      * @throws RenderException
      */
     public function logInAction() {
-        $page = $this->getDefaultPage();
-        $page->headerFile = $_SERVER['DOCUMENT_ROOT'] . '/application/layouts/authHeader.php';
+        $page = $this->getAuthDefaultPage();
         $page->title = 'Авторизация';
         $page->contentFile = dirname(__DIR__) . '/pages/auth.php';
 
@@ -33,7 +43,7 @@ class AuthController extends PublicController {
             $fields = $this->getPreparedFields($_POST);
             if ($this->validateFields($fields, $this->dataToView['errors'])) {
                 $this->userFacade->authUser($fields['login'], $fields['password']);
-                $this->view->redirect('/form/');
+                $this->view->redirect('/departments/');
             }
         } catch (UserFacadeException $e) {
             $this->dataToView['errors'][] = $e->getMessage();
@@ -74,5 +84,12 @@ class AuthController extends PublicController {
             return false;
         }
         return true;
+    }
+
+    protected function getAuthDefaultPage(): Page {
+        $page = new Page();
+        $page->headerFile = $_SERVER['DOCUMENT_ROOT'] . '/application/templates/authHeader.php';
+        $page->footerFile = $_SERVER['DOCUMENT_ROOT'] . '/application/templates/authFooter.php';
+        return $page;
     }
 }

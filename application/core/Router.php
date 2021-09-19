@@ -21,7 +21,7 @@ class Router {
     }
 
     /**
-     * Возвращает запрашиваемый url без GET параметоров, имени протокола и домена
+     * Возвращает запрашиваемый url без GET параметров, имени протокола и домена
      * @example https://example.org/hello/world?key=23sdf -> hello/world
      */
     protected function getClearRequestUrl(): string {
@@ -30,7 +30,7 @@ class Router {
     }
 
     /**
-     * Определение из маршрута названия контроллера, action-а, переменных маршрута(которые могут задаются в шаблоне маршрута)
+     * Определение из маршрута названия контроллера, action-а, переменных маршрута(которые могут задаваться в шаблоне маршрута)
      * @throws RouteException
      */
     public function getRoute(): Route {

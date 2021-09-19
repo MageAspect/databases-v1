@@ -4,17 +4,15 @@
 use application\core\Application;
 
 
-error_reporting(E_ALL);
+error_reporting(E_ALL & ~E_WARNING);
 ini_set('display_errors', 1);
 
-spl_autoload_register(
-        function ($class) {
-            $classPath = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] . '/' . $class . '.php');
-            if (file_exists($classPath)) {
-                include $classPath;
-            }
-        }
-);
+spl_autoload_register(function ($class) {
+    $classPath = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT'] . '/' . $class . '.php');
+    if (file_exists($classPath)) {
+        include $classPath;
+    }
+});
 
 try {
     Application::getInstance()->run();

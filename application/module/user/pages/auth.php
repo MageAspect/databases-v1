@@ -1,5 +1,5 @@
 <?php
-/** @var array $pageData */
+/** @var array $PAGE_DATA */
 ?>
 
 <main id="application">
@@ -33,9 +33,9 @@
                     </div>
                 </form>
 
-                <?php if (!empty($pageData['errors'])) : ?>
+                <?php if (!empty($PAGE_DATA['errors'])) : ?>
                     <div class="errors">
-                        <?php foreach ($pageData['errors'] as $item) : ?>
+                        <?php foreach ($PAGE_DATA['errors'] as $item) : ?>
                             <p><?= htmlspecialchars($item, ENT_QUOTES) ?></p>
                         <?php endforeach; ?>
                     </div>

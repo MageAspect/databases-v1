@@ -52,6 +52,19 @@ class UserFacade {
         try {
             $this->userService->setUser($user);
         } catch (UserSessionServiceException $e) {
+            throw new UserFacadeException('Не удалось авторизовать пользователя', 0, $e);
+        }
+    }
+
+    /**
+     * @throws UserFacadeException
+     */
+    public function getCurrentUser(): User {
+        try {
+            $sessionUser = $this->userService->getUser();
+            return $this->userStore->getUserById($sessionUser->id);
+        } catch (\Exception $e) {
+            throw new UserFacadeException('Не удалось получить текущего пользователя');
         }
     }
 

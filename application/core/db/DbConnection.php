@@ -1,7 +1,7 @@
 <?php
 
 
-namespace application\core;
+namespace application\core\db;
 
 
 use PDO;

@@ -1,10 +1,9 @@
 <?php
 
 
-namespace application\core;
+namespace application\core\db;
 
 
-use application\core\exception\DbQueryException;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -41,7 +40,7 @@ class Db {
         try {
             $statement->execute();
         } catch (PDOException $e) {
-            throw new DbQueryException($statement->errorInfo(), $statement->errorCode(), $e);
+            throw new DbQueryException(', ', implode($statement->errorInfo()), $statement->errorCode(), $e);
         }
 
         return $statement;

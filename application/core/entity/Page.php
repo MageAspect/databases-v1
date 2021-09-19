@@ -9,6 +9,7 @@ class Page {
     public string $headerFile = '';
     public string $title = '';
     public array $data = array();
+    public string $sidebarFile = '';
     public string $contentFile = '';
     public string $footerFile = '';
 }

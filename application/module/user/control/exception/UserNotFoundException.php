@@ -4,7 +4,7 @@
 namespace application\module\user\control\exception;
 
 
-use Exception;
+use application\module\user\facade\UserFacadeException;
 
 
-class UserNotFoundException extends Exception {}
+class UserNotFoundException extends UserFacadeException {}

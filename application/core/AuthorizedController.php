@@ -8,13 +8,11 @@ use application\core\entity\Page;
 use application\module\user\facade\AuthException;
 use application\module\user\facade\UserFacade;
 use application\module\user\facade\UserFacadeException;
-use Exception;
 
 
-abstract class AdminController extends Controller {
+abstract class AuthorizedController extends Controller {
     protected View $view;
     protected UserFacade $userFacade;
-    protected array $dataToView = array();
 
     /**
      * @throws AuthException
@@ -24,22 +22,17 @@ abstract class AdminController extends Controller {
         $this->userFacade = $userFacade ?? new UserFacade();
 
         try {
-            $this->userFacade->isAuthorisedUser();
+            $this->userFacade->getCurrentUser();
         } catch (UserFacadeException $e) {
-            throw new AuthException();
-        }
-
-        try {
-            $this->dataToView['system']['user'] = $this->userFacade->getSessionUser();
-        } catch (Exception $e) {
             throw new AuthException();
         }
     }
 
     protected function getDefaultPage(): Page {
         $page = new Page();
-        $page->headerFile = $_SERVER['DOCUMENT_ROOT'] . '/application/layouts/adminHeader.php';
-        $page->footerFile = $_SERVER['DOCUMENT_ROOT'] . '/application/layouts/adminFooter.php';
+        $page->headerFile = $_SERVER['DOCUMENT_ROOT'] . '/application/templates/header.php';
+        $page->sidebarFile = $_SERVER['DOCUMENT_ROOT'] . '/application/templates/sidebar.php';
+        $page->footerFile = $_SERVER['DOCUMENT_ROOT'] . '/application/templates/footer.php';
         return $page;
     }
 }
