@@ -49,4 +49,12 @@ class Db {
     public function lastInsertId(): ?int {
         return $this->db->lastInsertId() ?: null;
     }
+
+    public function getINPlaceholder(array $inItems): string {
+        if (empty($inItems)) {
+            return '';
+        }
+        
+        return str_repeat('?,', count($inItems) - 1) . '?';
+    }
 }

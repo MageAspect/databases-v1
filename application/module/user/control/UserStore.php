@@ -50,10 +50,17 @@ class UserStore {
         }
     }
 
+    /**
+     * @throws UserStoreException
+     */
     public function getUserById(int $id): User {
         try {
             $dbUser = $this->db->query(
-                    "SELECT id, login, hashed_password, email, name, last_name, patronymic, is_admin FROM users WHERE id = :id",
+                    "
+                        SELECT id, login, hashed_password, email, name, last_name, patronymic, is_admin, position, salary, path_to_avatar 
+                        FROM users 
+                        WHERE id = :id
+                        ",
                     array('id' => $id)
             );
             $userInfo = $dbUser->fetch();
@@ -71,6 +78,9 @@ class UserStore {
             $user->lastName = $userInfo['last_name'];
             $user->patronymic = $userInfo['patronymic'];
             $user->isAdmin = $userInfo['is_admin'] == 1;
+            $user->pathToAvatar = $userInfo['path_to_avatar'] ?: "";
+            $user->position = $userInfo['position'];
+            $user->salary = $userInfo['salary'];
             return $user;
         } catch (DbQueryException $ex) {
             throw new UserStoreException('Ошибка получения пользователя из базы данных', 0, $ex);

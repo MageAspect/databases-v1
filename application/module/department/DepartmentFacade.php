@@ -10,6 +10,7 @@ namespace application\module\department;
 
 use application\core\db\Db;
 use application\core\db\DbQueryException;
+use application\module\user\control\exception\UserStoreException;
 use application\module\user\control\UserStore;
 use Exception;
 
@@ -20,6 +21,7 @@ class DepartmentFacade {
 
     public function __construct() {
         $this->userStore = new UserStore();
+        $this->db = new Db();
     }
 
     /**
@@ -32,11 +34,10 @@ class DepartmentFacade {
             return array();
         }
 
-        $inBody = implode(',', $ids);
         try {
             $dbDepartments = $this->db->query(
-                    "SELECT id, name, description, head_id FROM departments WHERE id in (:ids)",
-                    array('ids' => $inBody)
+                    "SELECT id, name, description, head_id FROM departments WHERE id IN ({$this->db->getINPlaceholder($ids)})",
+                    $ids
             );
             $departments = array();
             while ($departmentInfo = $dbDepartments->fetch()) {
@@ -45,18 +46,33 @@ class DepartmentFacade {
                 $d->id = $departmentInfo['id'];
                 $d->name = $departmentInfo['name'];
                 $d->description = $departmentInfo['description'];
-                try {
-                    $d->head = $departmentInfo['head_id'] > 0 ? $this->userStore->getUserById($departmentInfo['head_id']) : null;
-                } catch (Exception $e) {
-                    $d->head = null;
-                }
+                $d->head = $departmentInfo['head_id'] > 0 ? $this->userStore->getUserById($departmentInfo['head_id']) : null;
 
                 $departments[$d->id] = $d;
             }
 
             return $departments;
-        } catch (DbQueryException $e) {
+        } catch (DbQueryException | UserStoreException $e) {
             throw new DepartmentFacadeException('Ошибка получения списка подразделей', 0, $e);
+        }
+    }
+
+    /**
+     * @return Department[]
+     * @throws DepartmentFacadeException
+     */
+    public function getAllDepartments(): array {
+        try {
+            $dbDepartmentsIds = $this->db->query("SELECT id FROM departments");
+
+            $departmentsIds = array();
+            while ($row = $dbDepartmentsIds->fetch()) {
+                $departmentsIds[] = $row['id'];
+            }
+
+            return !empty($departmentsIds) ? $this->getDepartments($departmentsIds) : array();
+        } catch (DbQueryException $e) {
+            throw new DepartmentFacadeException('Ошибка получения списка всех подразделей', 0, $e);
         }
     }
 
@@ -80,6 +96,85 @@ class DepartmentFacade {
             return !empty($departmentsIds) ? $this->getDepartments($departmentsIds) : array();
         } catch (DbQueryException $e) {
             throw new DepartmentFacadeException('Ошибка получения списка подразделей для пользователя', 0, $e);
+        }
+    }
+
+    /**
+     * @throws DepartmentFacadeException
+     */
+    public function updateDepartment(Department $department): void {
+        try {
+            $this->db->query(
+                    "
+                    UPDATE departments SET name = :name, description = :description, head_id = :head_id WHERE id = :id
+                    ",
+                    array(
+                            'id' => $department->id,
+                            'name' => $department->name,
+                            'description' => $department->description,
+                            'head_id' => $department->head->id,
+                    )
+            );
+        } catch (DbQueryException $e) {
+            throw new DepartmentFacadeException('Ошибка обновления подразделея', 0, $e);
+        }
+    }
+
+    /**
+     * @throws DepartmentFacadeException
+     */
+    public function addDepartment(Department $department): void {
+        try {
+            $this->db->query(
+                    "
+                    INSERT INTO departments (name, description, head_id) VALUES (:name, :description, :head_id)
+                    ",
+                    array(
+                            'name' => $department->name,
+                            'description' => $department->description,
+                            'head_id' => $department->head->id,
+                    )
+            );
+        } catch (DbQueryException $e) {
+            throw new DepartmentFacadeException('Ошибка обновления подразделея', 0, $e);
+        }
+    }
+
+    /**
+     * @throws DepartmentFacadeException
+     */
+    public function addUserToDepartment(int $userId, int $departmentId) {
+        try {
+            $this->db->query(
+                    "
+                    INSERT INTO user_department (user_id, department_id) VALUES (:user_id, :department_id)
+                    ",
+                    array(
+                            'user_id' => $userId,
+                            'department_id' => $departmentId,
+                    )
+            );
+        } catch (DbQueryException $e) {
+            throw new DepartmentFacadeException('Ошибка привязки пользователя к подразделению', 0, $e);
+        }
+    }
+
+    /**
+     * @throws DepartmentFacadeException
+     */
+    public function removeUserFromDepartment(int $userId, int $departmentId) {
+        try {
+            $this->db->query(
+                    "
+                    DELETE FROM user_department WHERE user_id = :user_id AND department_id = :department_id
+                    ",
+                    array(
+                            'user_id' => $userId,
+                            'department_id' => $departmentId,
+                    )
+            );
+        } catch (DbQueryException $e) {
+            throw new DepartmentFacadeException('Ошибка отвязки пользователя от подразделения', 0, $e);
         }
     }
 }
