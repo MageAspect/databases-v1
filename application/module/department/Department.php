@@ -16,4 +16,9 @@ class Department {
     public string $name;
     public string $description;
     public ?User $head;
+
+    /**
+     * @var User[] array
+     */
+    public array $members = array();
 }

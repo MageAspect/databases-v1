@@ -11,11 +11,11 @@ $user = (new UserFacade())->getCurrentUser();
     <div class="user">
         <div class="user-avatar-wrapper">
             <div class="user-avatar center-background"
-                 style="background-image: url('/assets/img/pexels-pixabay-220453.jpg');"></div>
+                 style="background-image: url('<?= $user->pathToAvatar ?>');"></div>
         </div>
         <div class="user-info">
-            <a href="/profile/" class="user-info-name a-hover">
-                Марк Прохоров
+            <a href="/users/<?= $user->id ?>/view/" class="user-info-name a-hover">
+                <?= $user->lastName ?> <?= $user->name ?>
             </a>
         </div>
     </div>

@@ -21,7 +21,7 @@ $departments = $PAGE_DATA['departments'];
                 </div>
                 <div class="main-content-header-title_desc">Список отделов</div>
             </div>
-            <button class="main-content-header-button button">
+            <button class="main-content-header-button button" onclick="location = '/departments/0/edit'">
                 <i class="fas fa-plus"></i> <span>Добавить</span>
             </button>
         </div>
@@ -36,7 +36,7 @@ $departments = $PAGE_DATA['departments'];
                                  style="background-image: url('<?= $department->head->pathToAvatar ?>');"></div>
                         </div>
                         <div class="main-user-preview-info">
-                            <a href="/" class="main-user-preview-info_name a-hover"><?= $department->head->name ?> <?= $department->head->lastName ?></a>
+                            <a href="/users/<?= $department->head->id ?>/view" class="main-user-preview-info_name a-hover"><?= $department->head->name ?> <?= $department->head->lastName ?></a>
                             <div class="main-user-preview-info_position"><?= $department->head->position ?></div>
                         </div>
                     </div>

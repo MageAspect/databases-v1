@@ -78,7 +78,7 @@ class UserStore {
             $user->lastName = $userInfo['last_name'];
             $user->patronymic = $userInfo['patronymic'];
             $user->isAdmin = $userInfo['is_admin'] == 1;
-            $user->pathToAvatar = $userInfo['path_to_avatar'] ?: "";
+            $user->pathToAvatar = $userInfo['path_to_avatar'] ?: "/public/img/upic-user.svg";
             $user->position = $userInfo['position'];
             $user->salary = $userInfo['salary'];
             return $user;

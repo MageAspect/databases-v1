@@ -48,6 +48,15 @@ class DepartmentFacade {
                 $d->description = $departmentInfo['description'];
                 $d->head = $departmentInfo['head_id'] > 0 ? $this->userStore->getUserById($departmentInfo['head_id']) : null;
 
+                $dbMembers = $this->db->query(
+                        "SELECT user_id FROM user_department WHERE department_id = :id",
+                        array('id' => $d->id)
+                );
+
+                while ($memberInfo = $dbMembers->fetch()) {
+                    $d->members[$memberInfo['user_id']] = $this->userStore->getUserById($memberInfo['user_id']);
+                }
+
                 $departments[$d->id] = $d;
             }
 
