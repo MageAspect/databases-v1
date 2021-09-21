@@ -22,20 +22,20 @@ $user = (new UserFacade())->getCurrentUser();
     <div class="menu-wrapper">
         <div class="menu">
             <div class="menu-desc">Главное меню</div>
-            <a href="/" class="menu-item">
+            <a href="/departments/" class="menu-item">
                 <div class="menu-item-icon">
                     <i class="fas fa-layer-group"></i>
                 </div>
                 <div class="menu-item-link">Отделы</div>
             </a>
-            <a href="/" class="menu-item <!--menu-item__selected-->">
+            <a href="/users/" class="menu-item <!--menu-item__selected-->">
                 <div class="menu-item-icon">
                     <i class="fas fa-user-friends"></i>
                 </div>
                 <div class="menu-item-link">Сотрудники</div>
             </a>
             <?php if ($user->isAdmin): ?>
-                <a href="/" class="menu-item menu-item__selected">
+                <a href="/admin/sql-query/" class="menu-item">
                     <div class="menu-item-icon">
                         <i class="fas fa-user-friends"></i>
                     </div>
@@ -45,7 +45,7 @@ $user = (new UserFacade())->getCurrentUser();
         </div>
         <div class="menu">
             <div class="menu-desc">Управление аккаунтом</div>
-            <a href="/" class="menu-item">
+            <a href="/users/<?= $user->id ?>/edit" class="menu-item">
                 <div class="menu-item-icon">
                     <i class="fas fa-user-cog"></i>
                 </div>

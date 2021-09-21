@@ -28,7 +28,7 @@ $departments = $PAGE_DATA['departments'];
         <div class="departments-list">
             <?php foreach ($departments as $department): ?>
             <div class="departments-list-item">
-                <a href="/departments/<?= $department->id?>/view/" class="a-hover departments-list-item_name"><?= $department->name ?></a>
+                <a href="/departments/<?= $department->id?>/details/" class="a-hover departments-list-item_name"><?= $department->name ?></a>
                 <div class="departments-list-item_head">
                     <div class="main-user-preview">
                         <div class="main-user-preview-avatar-wrapper">
@@ -36,7 +36,7 @@ $departments = $PAGE_DATA['departments'];
                                  style="background-image: url('<?= $department->head->pathToAvatar ?>');"></div>
                         </div>
                         <div class="main-user-preview-info">
-                            <a href="/users/<?= $department->head->id ?>/view" class="main-user-preview-info_name a-hover"><?= $department->head->name ?> <?= $department->head->lastName ?></a>
+                            <a href="/users/<?= $department->head->id ?>/details" class="main-user-preview-info_name a-hover"><?= $department->head->name ?> <?= $department->head->lastName ?></a>
                             <div class="main-user-preview-info_position"><?= $department->head->position ?></div>
                         </div>
                     </div>

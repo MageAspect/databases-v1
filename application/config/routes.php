@@ -15,4 +15,14 @@ return array(
                 \application\module\department\DepartmentController::class,
                 'listAction'
         ),
+        new Route(
+                '#^departments/(?P<id>\d+)/details#',
+                \application\module\department\DepartmentController::class,
+                'detailsAction'
+        ),
+        new Route(
+                '#^departments/(?P<id>\d+)/edit#',
+                \application\module\department\DepartmentController::class,
+                'detailsAction'
+        ),
 );

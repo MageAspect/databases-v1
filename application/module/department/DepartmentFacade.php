@@ -67,6 +67,18 @@ class DepartmentFacade {
     }
 
     /**
+     * @throws DepartmentFacadeException
+     */
+    public function getDepartmentById(int $id): Department {
+        $d = $this->getDepartments(array($id))[$id];
+
+        if (empty($d)) {
+            throw new DepartmentNotFoundException('Поздразделение не найдено');
+        }
+        return $d;
+    }
+
+    /**
      * @return Department[]
      * @throws DepartmentFacadeException
      */
@@ -152,7 +164,7 @@ class DepartmentFacade {
     /**
      * @throws DepartmentFacadeException
      */
-    public function addUserToDepartment(int $userId, int $departmentId) {
+    public function addMemberToDepartment(int $userId, int $departmentId) {
         try {
             $this->db->query(
                     "
@@ -171,7 +183,7 @@ class DepartmentFacade {
     /**
      * @throws DepartmentFacadeException
      */
-    public function removeUserFromDepartment(int $userId, int $departmentId) {
+    public function removeMemberFromDepartment(int $userId, int $departmentId) {
         try {
             $this->db->query(
                     "

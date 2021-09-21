@@ -26,7 +26,12 @@ class UserStore {
     public function getUserByLogin(string $login): User {
         try {
             $dbUser = $this->db->query(
-                    "SELECT id, login, hashed_password, email, name, last_name, patronymic, is_admin FROM users WHERE login = :login",
+                    "
+                        SELECT id, login, hashed_password, 
+                               email, name, last_name, patronymic, is_admin 
+                        FROM users 
+                        WHERE login = :login
+                    ",
                     array('login' => $login)
             );
             $userInfo = $dbUser->fetch();
@@ -57,7 +62,8 @@ class UserStore {
         try {
             $dbUser = $this->db->query(
                     "
-                        SELECT id, login, hashed_password, email, name, last_name, patronymic, is_admin, position, salary, path_to_avatar 
+                        SELECT id, login, hashed_password, email, name, last_name, 
+                               patronymic, is_admin, position, salary, path_to_avatar, phone
                         FROM users 
                         WHERE id = :id
                         ",
@@ -78,9 +84,10 @@ class UserStore {
             $user->lastName = $userInfo['last_name'];
             $user->patronymic = $userInfo['patronymic'];
             $user->isAdmin = $userInfo['is_admin'] == 1;
-            $user->pathToAvatar = $userInfo['path_to_avatar'] ?: "/public/img/upic-user.svg";
+            $user->pathToAvatar = $userInfo['path_to_avatar'] ?: '/public/img/upic-user.svg';
             $user->position = $userInfo['position'];
             $user->salary = $userInfo['salary'];
+            $user->phone = $userInfo['phone'] ?: '';
             return $user;
         } catch (DbQueryException $ex) {
             throw new UserStoreException('Ошибка получения пользователя из базы данных', 0, $ex);

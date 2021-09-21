@@ -4,7 +4,7 @@
 use application\core\Application;
 
 
-error_reporting(E_ALL & ~E_WARNING);
+error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
 ini_set('display_errors', 1);
 
 spl_autoload_register(function ($class) {
