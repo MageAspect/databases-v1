@@ -89,4 +89,15 @@ class UserFacade {
             throw new UserFacadeException('Не удалось получить информацию об авторизации пользователя');
         }
     }
+
+    /**
+     * @throws UserFacadeException
+     */
+    public function logOutUser(): void {
+        try {
+            $this->userService->logOutUser();
+        } catch (UserSessionServiceException $e) {
+            throw new UserFacadeException('Не удалось выйти');
+        }
+    }
 }

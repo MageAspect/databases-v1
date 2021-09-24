@@ -38,6 +38,14 @@ class AuthController extends Controller {
         $this->view->render($page);
     }
 
+    /**
+     * @throws UserFacadeException
+     */
+    public function logOutAction() {
+        $this->userFacade->logOutUser();
+        $this->view->redirect('/');
+    }
+
     protected function submit() {
         try {
             $fields = $this->getPreparedFields($_POST);

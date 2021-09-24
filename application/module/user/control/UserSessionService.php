@@ -60,4 +60,15 @@ class UserSessionService {
             throw new UserSessionServiceException('Ошибка записи пользователя в сессию', 0, $e);
         }
     }
+
+    /**
+     * @throws UserSessionServiceException
+     */
+    public function logOutUser(): void {
+        try {
+            $this->sessionService->unset('user');
+        } catch (\Exception $e) {
+            throw new UserSessionServiceException('Не удалось разлогинить пользователя', 0, $e);
+        }
+    }
 }

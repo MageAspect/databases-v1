@@ -51,7 +51,7 @@ $user = (new UserFacade())->getCurrentUser();
                 </div>
                 <div class="menu-item-link">Настройки</div>
             </a>
-            <a href="/" class="menu-item">
+            <a href="/logout/" class="menu-item">
                 <div class="menu-item-icon">
                     <i class="fas fa-sign-out-alt"></i>
                 </div>
