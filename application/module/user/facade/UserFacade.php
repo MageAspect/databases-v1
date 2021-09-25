@@ -37,13 +37,16 @@ class UserFacade {
 
         try {
             $user = $this->userStore->getUserByLogin($login);
-        } catch (UserStoreException $e) {
-            throw new UserFacadeException('Ошибка сервера попробуйте позже!', 0, $e);
-        } catch (UserNotFoundException $e) {
+            $hashedPass = $this->userStore->getUserHashedPassword($user->id);
+        }
+        catch (UserNotFoundException $e) {
             throw new UserFacadeException('Пользователь с логином ' . $login . ' не найден!', 0, $e);
         }
+        catch (UserStoreException $e) {
+            throw new UserFacadeException('Ошибка сервера попробуйте позже!', 0, $e);
+        }
 
-        $isCorrectPassword = password_verify($password, $user->hashedPassword);
+        $isCorrectPassword = password_verify($password, $hashedPass);
 
         if (!$isCorrectPassword) {
             throw new UserFacadeException('Неверный пароль');
@@ -71,11 +74,22 @@ class UserFacade {
     /**
      * @throws UserFacadeException
      */
-    public function getSessionUser(): User {
+    public function getAllUsers(): array {
         try {
-            return $this->userService->getUser();
-        } catch (UserSessionServiceException $e) {
+            return $this->userStore->getAllUsers();
+        } catch (UserStoreException $e) {
             throw new UserFacadeException('Не удалось получить текущего пользователя');
+        }
+    }
+
+    /**
+     * @throws UserFacadeException
+     */
+    public function getUserById(int $id): User {
+        try {
+            return $this->userStore->getUserById($id);
+        } catch (UserStoreException $e) {
+            throw new UserFacadeException('Не удалось получить пользователя');
         }
     }
 

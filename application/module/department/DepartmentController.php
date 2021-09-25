@@ -11,6 +11,7 @@ namespace application\module\department;
 use application\core\AuthorizedController;
 use application\core\exception\RenderException;
 use application\core\View;
+use application\module\user\entity\User;
 use application\module\user\facade\UserFacade;
 use application\module\user\facade\UserFacadeException;
 
@@ -80,11 +81,35 @@ class DepartmentController extends AuthorizedController {
             $currentUser = $this->userFacade->getCurrentUser();
             $page->title = $department->name;
 
-            $page->data['is-user-department-head'] = $department->head->id = $currentUser->id;
-            $page->data['is-user-admin'] = $department->head->id = $currentUser->id;
+            $page->data['is-user-admin'] = $currentUser->isAdmin;
+            $page->data['available-members'] = $this->userFacade->getAllUsers();
 
             if (!$this->departmentFacade->canUserEditDepartment($currentUser->id, $department->id)) {
                 $this->view->redirect('/');
+            }
+
+            if (isset($_POST['title'])) {
+                $department->name = $_POST['title'];
+                $department->head->id = $_POST['head-id'];
+                $department->description = $_POST['description'];
+
+                $courseMembersIds = array_map(fn(User $u) => $u->id, $department->members);
+                $newMembersIds = explode(',', $_POST['members-ids']);
+                $newMembersIds = array_map(fn(string $id) => (int)$id, $newMembersIds);
+
+                $membersToDelete = array_diff($courseMembersIds, $newMembersIds);
+                $membersToAdd = array_diff($newMembersIds, $courseMembersIds);
+
+                $this->departmentFacade->updateDepartment($department);
+
+                foreach ($membersToAdd as $memberId) {
+                    $this->departmentFacade->addMemberToDepartment($memberId, $department->id);
+                }
+                foreach ($membersToDelete as $memberId) {
+                    $this->departmentFacade->removeMemberFromDepartment($memberId, $department->id);
+                }
+
+                $this->view->redirect("/departments/$department->id/details");
             }
 
             $page->data['department'] = $department;

@@ -35,4 +35,9 @@ return array(
                 \application\module\department\DepartmentController::class,
                 'deleteAction'
         ),
+        new Route(
+                '#^api/1/user/(?P<id>\d+)#',
+                \application\module\user\controller\ApiController::class,
+                'getUserAction'
+        ),
 );

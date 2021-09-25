@@ -72,7 +72,7 @@ class DepartmentFacade {
         $department = $this->getDepartmentById($departmentId);
 
         try {
-            if ($userId == $department->head || $this->userStore->getUserById($userId)->isAdmin) {
+            if ($userId == $department->head->id || $this->userStore->getUserById($userId)->isAdmin) {
                 return true;
             }
             return false;

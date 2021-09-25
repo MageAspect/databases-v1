@@ -37,7 +37,7 @@ $userPerms = $PAGE_DATA['user-perms'];
                                  style="background-image: url('<?= $department->head->pathToAvatar ?>');"></div>
                         </div>
                         <div class="main-user-preview-info">
-                            <a href="/users/<?= $department->head->id ?>/details" class="main-user-preview-info_name a-hover"><?= $department->head->name ?> <?= $department->head->lastName ?></a>
+                            <a href="/users/<?= $department->head->id ?>/details" class="main-user-preview-info_name a-hover"><?= $department->head->lastName ?> <?= $department->head->name     ?></a>
                             <div class="main-user-preview-info_position"><?= $department->head->position ?></div>
                         </div>
                     </div>

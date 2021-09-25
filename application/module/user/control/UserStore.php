@@ -43,7 +43,6 @@ class UserStore {
 
             $user->id = $userInfo['id'];
             $user->email = $userInfo['email'];
-            $user->hashedPassword = $userInfo['hashed_password'];
             $user->login = $userInfo['login'];
             $user->name = $userInfo['name'];
             $user->lastName = $userInfo['last_name'];
@@ -52,6 +51,71 @@ class UserStore {
             return $user;
         } catch (DbQueryException $ex) {
             throw new UserStoreException('Ошибка получения пользователя из базы данных', 0, $ex);
+        }
+    }
+
+    /**
+     * @throws UserStoreException
+     * @throws UserNotFoundException
+     */
+    public function getUserHashedPassword(int $id): string {
+        try {
+            $dbUser = $this->db->query(
+                    "
+                        SELECT hashed_password
+                        FROM users 
+                        WHERE id = :id
+                    ",
+                    array('id' => $id)
+            );
+            $userInfo = $dbUser->fetch();
+
+            if (empty($userInfo)) {
+                throw new UserNotFoundException();
+            }
+
+            return $userInfo['hashed_password'];
+        } catch (DbQueryException $ex) {
+            throw new UserStoreException('Ошибка получения пользователя из базы данных', 0, $ex);
+        }
+    }
+
+    /**
+     * @return User[]
+     * @throws UserStoreException
+     */
+    public function getAllUsers(): array {
+        try {
+            $dbUsers = $this->db->query(
+                    "
+                        SELECT id, login, hashed_password, email, name, last_name, 
+                               patronymic, is_admin, position, salary, path_to_avatar, phone
+                        FROM users 
+                        "
+            );
+
+            $users = array();
+            while ($userInfo = $dbUsers->fetch()) {
+                $user = new User();
+
+                $user->id = $userInfo['id'];
+                $user->email = $userInfo['email'];
+                $user->login = $userInfo['login'];
+                $user->name = $userInfo['name'];
+                $user->lastName = $userInfo['last_name'];
+                $user->patronymic = $userInfo['patronymic'];
+                $user->isAdmin = $userInfo['is_admin'] == 1;
+                $user->pathToAvatar = $userInfo['path_to_avatar'] ?: '/public/img/upic-user.svg';
+                $user->position = $userInfo['position'];
+                $user->salary = $userInfo['salary'];
+                $user->phone = $userInfo['phone'] ?: '';
+
+                $users[$user->id] = $user;
+            }
+
+            return $users;
+        } catch (DbQueryException $ex) {
+            throw new UserStoreException('Ошибка получения пользователей из базы данных', 0, $ex);
         }
     }
 
@@ -78,7 +142,6 @@ class UserStore {
 
             $user->id = $userInfo['id'];
             $user->email = $userInfo['email'];
-            $user->hashedPassword = $userInfo['hashed_password'];
             $user->login = $userInfo['login'];
             $user->name = $userInfo['name'];
             $user->lastName = $userInfo['last_name'];

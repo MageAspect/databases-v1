@@ -64,9 +64,9 @@ $errors = $PAGE_DATA['errors'] ?? array();
             </div>
             <div class="department-details-block employees-container">
                 <div class="department-details-block-title">Сотрудники (<?= count($department->members)?>)</div>
-                <div class="employees-list">
+                <div class="employees-list main-user-preview-ext-grid-list">
                     <?php foreach ($department->members as $member): ?>
-                        <div class="main-user-preview-ext">
+                        <div class="main-user-preview-ext main-user-preview-ext-in-grid">
                             <div class="main-user-preview">
                                 <div class="main-user-preview-avatar-wrapper">
                                     <div class="main-user-preview-avatar center-background"
@@ -87,7 +87,9 @@ $errors = $PAGE_DATA['errors'] ?? array();
                                 <div class="main-user-preview-ext-values-phone"><?= $member->phone?></div>
                                 <div class="main-user-preview-ext-values-email"><?= $member->email?></div>
                             </div>
+                            <div></div>
                         </div>
+                    <div class="main-user-preview-ext-in-grid-line"></div>
                     <?php endforeach; ?>
                 </div>
             </div>
