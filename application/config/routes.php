@@ -28,6 +28,11 @@ return array(
         new Route(
                 '#^departments/(?P<id>\d+)/edit#',
                 \application\module\department\DepartmentController::class,
-                'detailsAction'
+                'editAction'
+        ),
+        new Route(
+                '#^departments/(?P<id>\d+)/delete#',
+                \application\module\department\DepartmentController::class,
+                'deleteAction'
         ),
 );

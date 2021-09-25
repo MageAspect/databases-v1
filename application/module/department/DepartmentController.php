@@ -12,6 +12,7 @@ use application\core\AuthorizedController;
 use application\core\exception\RenderException;
 use application\core\View;
 use application\module\user\facade\UserFacade;
+use application\module\user\facade\UserFacadeException;
 
 
 class DepartmentController extends AuthorizedController {
@@ -30,7 +31,17 @@ class DepartmentController extends AuthorizedController {
         $page->contentFile = __DIR__ . '/pages/list.php';
         $page->title = 'Список подразделений';
 
+
         $allDepartments = $this->departmentFacade->getAllDepartments();
+
+        $page->data['user-perms'] = array();
+        foreach ($allDepartments as $department) {
+            $page->data['user-perms'][$department->id] = array(
+                    'is-user-department-head' => $department->head->id == $this->userFacade->getCurrentUser()->id,
+                    'is-user-admin' => $this->userFacade->getCurrentUser()->isAdmin
+            );
+        }
+
         $page->data['departments'] = $allDepartments;
 
         $this->view->render($page);
@@ -54,5 +65,53 @@ class DepartmentController extends AuthorizedController {
         }
 
         $this->view->render($page);
+    }
+
+    /**
+     * @throws RenderException
+     */
+    public function editAction(array $pageParams) {
+        $page = $this->getDefaultPage();
+        $page->contentFile = __DIR__ . '/pages/edit.php';
+
+
+        try {
+            $department = $this->departmentFacade->getDepartmentById($pageParams['id']);
+            $currentUser = $this->userFacade->getCurrentUser();
+            $page->title = $department->name;
+
+            $page->data['is-user-department-head'] = $department->head->id = $currentUser->id;
+            $page->data['is-user-admin'] = $department->head->id = $currentUser->id;
+
+            if (!$this->departmentFacade->canUserEditDepartment($currentUser->id, $department->id)) {
+                $this->view->redirect('/');
+            }
+
+            $page->data['department'] = $department;
+        } catch (DepartmentFacadeException | UserFacadeException $e) {
+            $page->data['errors'][] = $e->getMessage();
+            $page->title = 'Редактирование подразделения';
+        }
+
+        $this->view->render($page);
+    }
+
+    public function deleteAction(array $pageParams) {
+        $page = $this->getDefaultPage();
+        $page->contentFile = __DIR__ . '/pages/edit.php';
+
+        try {
+            $currentUser = $this->userFacade->getCurrentUser();
+
+            if (!$currentUser->isAdmin) {
+                $this->view->redirect('/');
+            } else {
+                $this->departmentFacade->deleteDepartment($pageParams['id']);
+            }
+
+        } catch (DepartmentFacadeException | UserFacadeException $e) {
+            $page->data['errors'][] = $e->getMessage();
+            $page->title = 'Ошибка удаления';
+        }
     }
 }

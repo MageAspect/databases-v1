@@ -12,7 +12,6 @@ use application\core\db\Db;
 use application\core\db\DbQueryException;
 use application\module\user\control\exception\UserStoreException;
 use application\module\user\control\UserStore;
-use Exception;
 
 
 class DepartmentFacade {
@@ -69,11 +68,28 @@ class DepartmentFacade {
     /**
      * @throws DepartmentFacadeException
      */
+    public function canUserEditDepartment(int $userId, int $departmentId): bool {
+        $department = $this->getDepartmentById($departmentId);
+
+        try {
+            if ($userId == $department->head || $this->userStore->getUserById($userId)->isAdmin) {
+                return true;
+            }
+            return false;
+        } catch (UserStoreException $e) {
+            throw new DepartmentFacadeException('Не удалось проверить права на изменения сотрудников отдела', 0, $e);
+        }
+    }
+
+
+    /**
+     * @throws DepartmentFacadeException
+     */
     public function getDepartmentById(int $id): Department {
         $d = $this->getDepartments(array($id))[$id];
 
         if (empty($d)) {
-            throw new DepartmentNotFoundException('Поздразделение не найдено');
+            throw new DepartmentNotFoundException('Подразделение не найдено');
         }
         return $d;
     }
@@ -93,7 +109,7 @@ class DepartmentFacade {
 
             return !empty($departmentsIds) ? $this->getDepartments($departmentsIds) : array();
         } catch (DbQueryException $e) {
-            throw new DepartmentFacadeException('Ошибка получения списка всех подразделей', 0, $e);
+            throw new DepartmentFacadeException('Ошибка получения списка всех подразделений', 0, $e);
         }
     }
 
@@ -116,7 +132,7 @@ class DepartmentFacade {
 
             return !empty($departmentsIds) ? $this->getDepartments($departmentsIds) : array();
         } catch (DbQueryException $e) {
-            throw new DepartmentFacadeException('Ошибка получения списка подразделей для пользователя', 0, $e);
+            throw new DepartmentFacadeException('Ошибка получения списка подразделений для пользователя', 0, $e);
         }
     }
 
@@ -140,6 +156,25 @@ class DepartmentFacade {
             throw new DepartmentFacadeException('Ошибка обновления подразделея', 0, $e);
         }
     }
+
+    /**
+     * @throws DepartmentFacadeException
+     */
+    public function deleteDepartment(int $departmentId): void {
+        try {
+            $this->db->query(
+                    "
+                    DELETE FROM departments WHERE id = :id
+                    ",
+                    array(
+                            'id' => $departmentId,
+                    )
+            );
+        } catch (DbQueryException $e) {
+            throw new DepartmentFacadeException('Ошибка обновления подразделения', 0, $e);
+        }
+    }
+
 
     /**
      * @throws DepartmentFacadeException

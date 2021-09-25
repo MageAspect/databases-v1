@@ -27,7 +27,7 @@ $errors = $PAGE_DATA['errors'] ?? array();
                     <span>К списку</span>
                 </button>
                 <?php if (empty($errors)): ?>
-                <button class="button" onclick="location='/departments/<?= $department->id ?>/edit'">
+                <button class="button" onclick="location = '/departments/<?= $department->id ?>/edit'">
                     <span>Редактировать</span>
                 </button>
                 <?php endif; ?>

@@ -9,6 +9,7 @@ use application\module\department\Department;
 
 
 $departments = $PAGE_DATA['departments'];
+$userPerms = $PAGE_DATA['user-perms'];
 ?>
 
 
@@ -42,10 +43,14 @@ $departments = $PAGE_DATA['departments'];
                     </div>
                 </div>
                 <div class="departments-list-item_desc"><?= $department->description ?></div>
+                <?php if ($userPerms[$department->id]['is-user-admin'] || $userPerms[$department->id]['is-user-department-head']): ?>
                 <div class="departments-list-item_buttons">
                     <a href="/departments/<?= $department->id?>/edit/" class="button button-edit button-no-shadow">редактировать</a>
+                    <?php if ($userPerms[$department->id]['is-user-admin']): ?>
                     <a href="/departments/<?= $department->id?>/delete/" class="button button-delete button-no-shadow">Удалить</i></a>
+                    <?php endif; ?>
                 </div>
+                <?php endif; ?>
             </div>
             <?php endforeach; ?>
         </div>

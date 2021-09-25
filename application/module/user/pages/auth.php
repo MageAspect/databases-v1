@@ -2,13 +2,13 @@
 /** @var array $PAGE_DATA */
 ?>
 
-<main id="application">
+<main id="application-auth">
     <div class="auth-header auth-header-2">
         <div class="logo">
             Отдел кадров
         </div>
         <div class="menu">
-            <a href="/" class="menu-item menu-item__selected">Авторизация</a>
+            <a href="/" class="menu-item">Авторизация</a>
         </div>
     </div>
     <div class="authorization">
