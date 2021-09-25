@@ -28,9 +28,12 @@ $isUserAdmin = $PAGE_DATA['is-user-admin']
                     <i class="fas fa-user-friends"></i>
                 </div>
                 <?php if ($isUserAdmin): ?>
-                <div class="main-content-header-title_desc">Редактирование: <input type="text" class="department-title-edit" value="<?= $department->name ?>"></div>
+                    <div class="main-content-header-title_desc">Редактирование: <input type="text"
+                                                                                       class="department-title-edit"
+                                                                                       value="<?= $department->name ?>">
+                    </div>
                 <?php else: ?>
-                <div class="main-content-header-title_desc">Редактирование: <?= $department->name ?></div>
+                    <div class="main-content-header-title_desc">Редактирование: <?= $department->name ?></div>
                 <?php endif; ?>
             </div>
             <div class="main-content-header-buttons">
@@ -43,67 +46,33 @@ $isUserAdmin = $PAGE_DATA['is-user-admin']
             </div>
         </div>
         <form class="department-details department-edit" id="department-form" method="post">
-            <input type="hidden" name="head-id" value="<?= $department->head->id ?>">
-            <input type="hidden" name="title" value="<?= $department->name ?>">
-            <input type="hidden" name="members-ids" value="<?= implode(',', array_map(fn(User $u) => $u->id, $department->members)) ?>">
-            <div class="department-details-block department-head-container">
-                <div class="department-details-block-title department-edit-block-title">
-                    <div class="department-details-block-title-desc">Руководитель отдела</div>
-                    <?php if ($isUserAdmin): ?>
-                    <div class="department-edit-block-title-buttons">
-                        <button class="button button-second button-edit " id="edit-department-head">
-                            <span class="point-events">изменить</span>
-                        </button>
+            <?php if (empty($errors)): ?>
+
+                <input type="hidden" name="head-id" value="<?= $department->head->id ?>">
+                <input type="hidden" name="title" value="<?= $department->name ?>">
+                <input type="hidden" name="members-ids"
+                       value="<?= implode(',', array_map(fn(User $u) => $u->id, $department->members)) ?>">
+                <div class="department-details-block department-head-container">
+                    <div class="department-details-block-title department-edit-block-title">
+                        <div class="department-details-block-title-desc">Руководитель отдела</div>
+                        <?php if ($isUserAdmin): ?>
+                            <div class="department-edit-block-title-buttons">
+                                <button class="button button-second button-edit " id="edit-department-head">
+                                    <span class="point-events">изменить</span>
+                                </button>
+                            </div>
+                        <?php endif; ?>
                     </div>
-                    <?php endif; ?>
-                </div>
-                <div class="main-user-preview-ext" id="department-head-ext-container">
-                    <div class="main-user-preview">
-                        <div class="main-user-preview-avatar-wrapper">
-                            <div class="main-user-preview-avatar center-background"
-                                 style="background-image: url('<?= $department->head->pathToAvatar ?>');"></div>
-                        </div>
-                        <div class="main-user-preview-info">
-                            <a href="/users/<?= $department->head->id ?>/details" class="main-user-preview-info_name a-hover"><?= $department->head->lastName ?> <?= $department->head->name ?></a>
-                            <div class="main-user-preview-info_position"><?= $department->head->position ?></div>
-                        </div>
-                    </div>
-                    <div class="main-user-preview-ext-fields">
-                        <div class="main-user-preview-ext-fields-phone">Телефон:</div>
-                        <div class="main-user-preview-ext-fields-email">Email:</div>
-                    </div>
-                    <div class="main-user-preview-ext-values">
-                        <div class="main-user-preview-ext-values-phone"><?= $department->head->phone?></div>
-                        <div class="main-user-preview-ext-values-email"><?= $department->head->email?></div>
-                    </div>
-                </div>
-            </div>
-            <div class="department-details-block">
-                <div class="department-details-block-title">Описание</div>
-                <textarea name="description" class="department-description department-description-edit ui-scroll"><?= $department->description ?></textarea>
-            </div>
-            <div class="department-details-block department-edit-block employees-container">
-                <div class="department-details-block-title department-edit-block-title">
-                    <div class="department-edit-block-title-desc">Сотрудники (<?= count($department->members)?>)</div>
-                    <div class="department-edit-block-title-buttons">
-                        <button class="button button-add button-second" id="add-department-member">
-                            <i class="fas fa-plus point-events"></i> <span class="point-events">Добавить</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="employees-list main-user-preview-ext-grid-list">
-                    <?php foreach ($department->members as $member): ?>
-                    <div class="main-user-preview-ext main-user-preview-ext-in-grid" data-user-id="<?= $member->id ?>">
+                    <div class="main-user-preview-ext" id="department-head-ext-container">
                         <div class="main-user-preview">
                             <div class="main-user-preview-avatar-wrapper">
                                 <div class="main-user-preview-avatar center-background"
-                                     style="background-image: url('<?= $member->pathToAvatar ?>');"></div>
+                                     style="background-image: url('<?= $department->head->pathToAvatar ?>');"></div>
                             </div>
                             <div class="main-user-preview-info">
-                                <a href="/users/<?= $member->id ?>/details" class="main-user-preview-info_name a-hover">
-                                    <?= $member->lastName ?> <?= $member->name ?>
-                                </a>
-                                <div class="main-user-preview-info_position"><?= $member->position ?></div>
+                                <a href="/users/<?= $department->head->id ?>/details"
+                                   class="main-user-preview-info_name a-hover"><?= $department->head->lastName ?> <?= $department->head->name ?></a>
+                                <div class="main-user-preview-info_position"><?= $department->head->position ?></div>
                             </div>
                         </div>
                         <div class="main-user-preview-ext-fields">
@@ -111,19 +80,65 @@ $isUserAdmin = $PAGE_DATA['is-user-admin']
                             <div class="main-user-preview-ext-fields-email">Email:</div>
                         </div>
                         <div class="main-user-preview-ext-values">
-                            <div class="main-user-preview-ext-values-phone"><?= $member->phone?></div>
-                            <div class="main-user-preview-ext-values-email"><?= $member->email?></div>
+                            <div class="main-user-preview-ext-values-phone"><?= $department->head->phone ?></div>
+                            <div class="main-user-preview-ext-values-email"><?= $department->head->email ?></div>
                         </div>
-                        <div class="main-user-preview-ext-actions">
-                            <button class="button button-second button-delete delete-member" data-member-id="<?= $member->id?>">
-                                <span class="point-events">удалить</span>
+                    </div>
+                </div>
+                <div class="department-details-block">
+                    <div class="department-details-block-title">Описание</div>
+                    <textarea name="description"
+                              class="department-description department-description-edit ui-scroll"><?= $department->description ?></textarea>
+                </div>
+                <div class="department-details-block department-edit-block employees-container">
+                    <div class="department-details-block-title department-edit-block-title">
+                        <div class="department-edit-block-title-desc">Сотрудники (<?= count($department->members) ?>)
+                        </div>
+                        <div class="department-edit-block-title-buttons">
+                            <button class="button button-add button-second" id="add-department-member">
+                                <i class="fas fa-plus point-events"></i> <span class="point-events">Добавить</span>
                             </button>
                         </div>
                     </div>
-                    <div class="main-user-preview-ext-in-grid-line" data-user-id="<?= $member->id ?>"></div>
-                    <?php endforeach; ?>
+                    <div class="employees-list main-user-preview-ext-grid-list">
+                        <?php foreach ($department->members as $member): ?>
+                            <div class="main-user-preview-ext main-user-preview-ext-in-grid"
+                                 data-user-id="<?= $member->id ?>">
+                                <div class="main-user-preview">
+                                    <div class="main-user-preview-avatar-wrapper">
+                                        <div class="main-user-preview-avatar center-background"
+                                             style="background-image: url('<?= $member->pathToAvatar ?>');"></div>
+                                    </div>
+                                    <div class="main-user-preview-info">
+                                        <a href="/users/<?= $member->id ?>/details"
+                                           class="main-user-preview-info_name a-hover">
+                                            <?= $member->lastName ?> <?= $member->name ?>
+                                        </a>
+                                        <div class="main-user-preview-info_position"><?= $member->position ?></div>
+                                    </div>
+                                </div>
+                                <div class="main-user-preview-ext-fields">
+                                    <div class="main-user-preview-ext-fields-phone">Телефон:</div>
+                                    <div class="main-user-preview-ext-fields-email">Email:</div>
+                                </div>
+                                <div class="main-user-preview-ext-values">
+                                    <div class="main-user-preview-ext-values-phone"><?= $member->phone ?></div>
+                                    <div class="main-user-preview-ext-values-email"><?= $member->email ?></div>
+                                </div>
+                                <div class="main-user-preview-ext-actions">
+                                    <button class="button button-second button-delete delete-member"
+                                            data-member-id="<?= $member->id ?>">
+                                        <span class="point-events">удалить</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="main-user-preview-ext-in-grid-line" data-user-id="<?= $member->id ?>"></div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
-            </div>
+            <?php else: ?>
+                <div class="application-content-error"><?= array_shift($errors) ?></div>
+            <?php endif; ?>
         </form>
         <div class="user-selector-popup user-selector-popup-hidden">
             <div class="user-selector-container">
@@ -136,7 +151,8 @@ $isUserAdmin = $PAGE_DATA['is-user-admin']
                                          style="background-image: url('<?= $member->pathToAvatar ?>');"></div>
                                 </div>
                                 <div class="main-user-preview-info">
-                                    <a href="/users/<?= $member->id ?>/details" class="main-user-preview-info_name a-hover">
+                                    <a href="/users/<?= $member->id ?>/details"
+                                       class="main-user-preview-info_name a-hover">
                                         <?= $member->lastName ?> <?= $member->name ?>
                                     </a>
                                     <div class="main-user-preview-info_position"><?= $member->position ?></div>
@@ -147,17 +163,18 @@ $isUserAdmin = $PAGE_DATA['is-user-admin']
                                 <div class="main-user-preview-ext-fields-email">Email:</div>
                             </div>
                             <div class="main-user-preview-ext-values">
-                                <div class="main-user-preview-ext-values-phone"><?= $member->phone?></div>
-                                <div class="main-user-preview-ext-values-email"><?= $member->email?></div>
+                                <div class="main-user-preview-ext-values-phone"><?= $member->phone ?></div>
+                                <div class="main-user-preview-ext-values-email"><?= $member->email ?></div>
                             </div>
                             <div class="main-user-preview-ext-actions">
-                                <button class="button button-second button-edit select-user-button" data-user-id="<?= $member->id?>">
+                                <button class="button button-second button-edit select-user-button"
+                                        data-user-id="<?= $member->id ?>">
                                     <span class="point-events">выбрать</span>
                                 </button>
                             </div>
                             <div></div>
                         </div>
-                    <div class="main-user-preview-ext-in-grid-line"></div>
+                        <div class="main-user-preview-ext-in-grid-line"></div>
                     <?php endforeach; ?>
                 </div>
             </div>
@@ -168,7 +185,7 @@ $isUserAdmin = $PAGE_DATA['is-user-admin']
 <script>
     class DepartmentForm {
         constructor(membersIds) {
-            this.members = Object.keys(membersIds).length > 0 ? Object.values(membersIds) :[];
+            this.members = Object.keys(membersIds).length > 0 ? Object.values(membersIds) : [];
             this.form = document.querySelector('#department-form');
             this.userSelector = new UserSelector();
         }
@@ -257,7 +274,7 @@ $isUserAdmin = $PAGE_DATA['is-user-admin']
                 console.log('Ошибка получения пользвоателя с id ' + id)
             }
 
-            return  result;
+            return result;
         }
 
         async addMember(id) {
@@ -305,7 +322,7 @@ $isUserAdmin = $PAGE_DATA['is-user-admin']
         }
 
         removeMember(id) {
-            this.members = this.members.filter(value => value != id );
+            this.members = this.members.filter(value => value != id);
 
             let member = document.querySelector(`.main-user-preview-ext-in-grid[data-user-id="${id}"]`);
             let memberBorder = document.querySelector(`.main-user-preview-ext-in-grid-line[data-user-id="${id}"]`);
@@ -319,7 +336,7 @@ $isUserAdmin = $PAGE_DATA['is-user-admin']
             this.selectionCallBack = null;
             this.userListPopup = document.querySelector('.user-selector-popup');
 
-            for(let selectButton of this.userListPopup.querySelectorAll('.select-user-button')) {
+            for (let selectButton of this.userListPopup.querySelectorAll('.select-user-button')) {
                 selectButton.addEventListener('click', (e) => {
                     e.preventDefault();
 

@@ -32,19 +32,22 @@ class DepartmentController extends AuthorizedController {
         $page->contentFile = __DIR__ . '/pages/list.php';
         $page->title = 'Список подразделений';
 
+        try {
+            $allDepartments = $this->departmentFacade->getAllDepartments();
 
-        $allDepartments = $this->departmentFacade->getAllDepartments();
+            $page->data['user-perms'] = array();
+            foreach ($allDepartments as $department) {
+                $page->data['user-perms'][$department->id] = array(
+                        'is-user-department-head' => $department->head->id == $this->userFacade->getCurrentUser()->id,
+                        'is-user-admin' => $this->userFacade->getCurrentUser()->isAdmin
+                );
+            }
+            $page->data['departments'] = $allDepartments;
+            $page->data['current-user'] = $this->userFacade->getCurrentUser();
 
-        $page->data['user-perms'] = array();
-        foreach ($allDepartments as $department) {
-            $page->data['user-perms'][$department->id] = array(
-                    'is-user-department-head' => $department->head->id == $this->userFacade->getCurrentUser()->id,
-                    'is-user-admin' => $this->userFacade->getCurrentUser()->isAdmin
-            );
+        } catch (UserFacadeException | DepartmentFacadeException $e) {
+            $page->data['errors'][] = $e->getMessage();
         }
-
-        $page->data['departments'] = $allDepartments;
-        $page->data['current-user'] = $this->userFacade->getCurrentUser();
 
         $this->view->render($page);
     }
@@ -94,7 +97,8 @@ class DepartmentController extends AuthorizedController {
             $page->data['is-user-admin'] = $currentUser->isAdmin;
             $page->data['available-members'] = $this->userFacade->getAllUsers();
 
-            if ($pageParams['id'] > 0  && !$this->departmentFacade->canUserEditDepartment($currentUser->id, $department->id)){
+            if ($pageParams['id'] > 0 && !$this->departmentFacade->canUserEditDepartment($currentUser->id,
+                            $department->id)) {
                 $this->view->redirect('/');
             } elseif ($pageParams['id'] == 0 && !$currentUser->isAdmin) {
                 $this->view->redirect('/');
