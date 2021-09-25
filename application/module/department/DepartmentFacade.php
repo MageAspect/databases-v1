@@ -179,7 +179,7 @@ class DepartmentFacade {
     /**
      * @throws DepartmentFacadeException
      */
-    public function addDepartment(Department $department): void {
+    public function addDepartment(Department $department): int {
         try {
             $this->db->query(
                     "
@@ -191,6 +191,8 @@ class DepartmentFacade {
                             'head_id' => $department->head->id,
                     )
             );
+
+            return $this->db->lastInsertId();
         } catch (DbQueryException $e) {
             throw new DepartmentFacadeException('Ошибка обновления подразделея', 0, $e);
         }

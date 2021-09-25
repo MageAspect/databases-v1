@@ -75,16 +75,27 @@ class DepartmentController extends AuthorizedController {
         $page = $this->getDefaultPage();
         $page->contentFile = __DIR__ . '/pages/edit.php';
 
-
         try {
-            $department = $this->departmentFacade->getDepartmentById($pageParams['id']);
             $currentUser = $this->userFacade->getCurrentUser();
+
+            if ($pageParams['id'] > 0) {
+                $department = $this->departmentFacade->getDepartmentById($pageParams['id']);
+
+            } else {
+                $department = new Department();
+                $department->id = 0;
+                $department->head = $currentUser;
+                $department->description = '';
+                $department->name = 'Новое подразделение';
+            }
             $page->title = $department->name;
 
             $page->data['is-user-admin'] = $currentUser->isAdmin;
             $page->data['available-members'] = $this->userFacade->getAllUsers();
 
-            if (!$this->departmentFacade->canUserEditDepartment($currentUser->id, $department->id)) {
+            if ($pageParams['id'] > 0  && !$this->departmentFacade->canUserEditDepartment($currentUser->id, $department->id)){
+                $this->view->redirect('/');
+            } elseif ($pageParams['id'] == 0 && !$currentUser->isAdmin) {
                 $this->view->redirect('/');
             }
 
@@ -94,13 +105,18 @@ class DepartmentController extends AuthorizedController {
                 $department->description = $_POST['description'];
 
                 $courseMembersIds = array_map(fn(User $u) => $u->id, $department->members);
-                $newMembersIds = explode(',', $_POST['members-ids']);
+
+                $newMembersIds = !empty($_POST['members-ids']) ? explode(',', $_POST['members-ids']) : array();
                 $newMembersIds = array_map(fn(string $id) => (int)$id, $newMembersIds);
 
                 $membersToDelete = array_diff($courseMembersIds, $newMembersIds);
                 $membersToAdd = array_diff($newMembersIds, $courseMembersIds);
 
-                $this->departmentFacade->updateDepartment($department);
+                if ($pageParams['id'] > 0) {
+                    $this->departmentFacade->updateDepartment($department);
+                } else {
+                    $department->id = $this->departmentFacade->addDepartment($department);
+                }
 
                 foreach ($membersToAdd as $memberId) {
                     $this->departmentFacade->addMemberToDepartment($memberId, $department->id);
@@ -121,6 +137,7 @@ class DepartmentController extends AuthorizedController {
         $this->view->render($page);
     }
 
+
     public function deleteAction(array $pageParams) {
         $page = $this->getDefaultPage();
         $page->contentFile = __DIR__ . '/pages/edit.php';
@@ -134,6 +151,7 @@ class DepartmentController extends AuthorizedController {
                 $this->departmentFacade->deleteDepartment($pageParams['id']);
             }
 
+            $this->view->redirect('/departments/');
         } catch (DepartmentFacadeException | UserFacadeException $e) {
             $page->data['errors'][] = $e->getMessage();
             $page->title = 'Ошибка удаления';
