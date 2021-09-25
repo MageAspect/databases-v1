@@ -44,6 +44,7 @@ class DepartmentController extends AuthorizedController {
         }
 
         $page->data['departments'] = $allDepartments;
+        $page->data['current-user'] = $this->userFacade->getCurrentUser();
 
         $this->view->render($page);
     }

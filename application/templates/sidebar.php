@@ -14,7 +14,7 @@ $user = (new UserFacade())->getCurrentUser();
                  style="background-image: url('<?= $user->pathToAvatar ?>');"></div>
         </div>
         <div class="user-info">
-            <a href="/users/<?= $user->id ?>/view/" class="user-info-name a-hover">
+            <a href="/users/<?= $user->id ?>/details/" class="user-info-name a-hover">
                 <?= $user->lastName ?> <?= $user->name ?>
             </a>
         </div>
@@ -45,7 +45,7 @@ $user = (new UserFacade())->getCurrentUser();
         </div>
         <div class="menu">
             <div class="menu-desc">Управление аккаунтом</div>
-            <a href="/users/<?= $user->id ?>/edit" class="menu-item">
+            <a href="/users/<?= $user->id ?>/details" class="menu-item">
                 <div class="menu-item-icon">
                     <i class="fas fa-user-cog"></i>
                 </div>

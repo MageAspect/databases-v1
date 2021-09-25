@@ -21,23 +21,28 @@ return array(
                 'listAction'
         ),
         new Route(
-                '#^departments/(?P<id>\d+)/details#',
+                '#^departments/(?P<id>\d+)/details$#',
                         \application\module\department\DepartmentController::class,
                 'detailsAction'
         ),
         new Route(
-                '#^departments/(?P<id>\d+)/edit#',
+                '#^departments/(?P<id>\d+)/edit$#',
                 \application\module\department\DepartmentController::class,
                 'editAction'
         ),
         new Route(
-                '#^departments/(?P<id>\d+)/delete#',
+                '#^departments/(?P<id>\d+)/delete$#',
                 \application\module\department\DepartmentController::class,
                 'deleteAction'
         ),
         new Route(
-                '#^api/1/user/(?P<id>\d+)#',
+                '#^api/1/user/(?P<id>\d+)$#',
                 \application\module\user\controller\ApiController::class,
                 'getUserAction'
+        ),
+        new Route(
+                '#^users$#',
+                \application\module\user\controller\UserController::class,
+                'listAction'
         ),
 );

@@ -6,10 +6,13 @@
 /** @var Department[] $departments */
 
 use application\module\department\Department;
+use application\module\user\entity\User;
 
 
 $departments = $PAGE_DATA['departments'];
 $userPerms = $PAGE_DATA['user-perms'];
+/** @var User $currenUser */
+$currenUser = $PAGE_DATA['current-user'];
 ?>
 
 
@@ -22,9 +25,11 @@ $userPerms = $PAGE_DATA['user-perms'];
                 </div>
                 <div class="main-content-header-title_desc">Список отделов</div>
             </div>
+            <?php if ($currenUser->isAdmin): ?>
             <button class="main-content-header-button button" onclick="location = '/departments/0/edit'">
                 <i class="fas fa-plus"></i> <span>Добавить</span>
             </button>
+            <?php endif ?>
         </div>
         <div class="departments-list">
             <?php foreach ($departments as $department): ?>

@@ -440,7 +440,6 @@ textarea {
     color: #cfd8e4; }
 
 .authorization {
-    height: 100%;
     min-height: 50rem;
     display: flex;
     justify-content: center;
