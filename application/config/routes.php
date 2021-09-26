@@ -45,4 +45,19 @@ return array(
                 \application\module\user\controller\UserController::class,
                 'listAction'
         ),
+        new Route(
+                '#^users/(?P<id>\d+)/details$#',
+                \application\module\user\controller\UserController::class,
+                'detailsAction'
+        ),
+        new Route(
+                '#^users/(?P<id>\d+)/edit$#',
+                \application\module\user\controller\UserController::class,
+                'editAction'
+        ),
+        new Route(
+                '#^users/(?P<id>\d+)/delete$#',
+                \application\module\user\controller\UserController::class,
+                'deleteAction'
+        ),
 );

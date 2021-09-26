@@ -42,7 +42,7 @@ class Router {
             }
 
             foreach ($matches as $variableName => $value) {
-                if (!is_string($variableName) || empty($value)) {
+                if (!is_string($variableName) || !isset($value)) {
                     continue;
                 }
                 $route->variables[$variableName] = $value;
