@@ -40,7 +40,7 @@ class Db {
         try {
             $statement->execute();
         } catch (PDOException $e) {
-            throw new DbQueryException(', ', implode($statement->errorInfo()), $statement->errorCode(), $e);
+            throw new DbQueryException($e->getMessage() . '|' . implode($statement->errorInfo()), 0, $e);
         }
 
         return $statement;

@@ -96,6 +96,28 @@ class UserFacade {
     /**
      * @throws UserFacadeException
      */
+    public function updateUser(User $user, ?string $password = null): void {
+        try {
+            $this->userStore->updateUser($user, $password);
+        } catch (UserStoreException $e) {
+            throw new UserFacadeException('Не удалось обновить пользователя');
+        }
+    }
+
+    /**
+     * @throws UserFacadeException
+     */
+    public function addUser(User $user, ?string $password = null): int {
+        try {
+            $this->userStore->addUser($user, $password);
+        } catch (UserStoreException $e) {
+            throw new UserFacadeException('Не удалось добавить пользователя');
+        }
+    }
+
+    /**
+     * @throws UserFacadeException
+     */
     public function isAuthorisedUser(): bool {
         try {
             return $this->userService->isAuthorised();

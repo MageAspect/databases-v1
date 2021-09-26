@@ -199,11 +199,14 @@ $isUserAdmin = $PAGE_DATA['is-user-admin']
             });
 
             let editHeadButton = document.querySelector('#edit-department-head');
-            editHeadButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.userSelector.setCallBack(this.setDepartmentHead.bind(this))
-                this.userSelector.showPopup();
-            });
+            if (editHeadButton) {
+                editHeadButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.userSelector.setCallBack(this.setDepartmentHead.bind(this))
+                    this.userSelector.showPopup();
+                });
+            }
+
 
             let addMemberButton = document.querySelector('#add-department-member');
             addMemberButton.addEventListener('click', (e) => {

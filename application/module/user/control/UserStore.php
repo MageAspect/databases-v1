@@ -156,4 +156,83 @@ class UserStore {
             throw new UserStoreException('Ошибка получения пользователя из базы данных', 0, $ex);
         }
     }
+
+    /**
+     * @throws UserStoreException
+     */
+    public function updateUser(User $user, ?string $password = null): void {
+        $passwordSqlPart = '';
+        if (!empty($password)) {
+            $password = password_hash($password, PASSWORD_DEFAULT);
+            $passwordSqlPart = ", hashed_password = :password";
+        }
+
+        $sql = "
+            UPDATE users SET name = :name, last_name = :last_name, patronymic = :patronymic,
+                email = :email, phone = :phone, path_to_avatar = :path_to_avatar, position = :position,
+                salary = :salary $passwordSqlPart
+            WHERE id = :id
+        ";
+
+        $fields = array(
+                'id' => $user->id,
+                'name' => $user->name,
+                'last_name' => $user->lastName,
+                'patronymic' => $user->patronymic,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'path_to_avatar' => $user->pathToAvatar,
+                'position' => $user->position,
+                'salary' => $user->salary,
+        );
+
+        if (!empty($password)) {
+            $fields['password'] = $password;
+        }
+
+        try {
+            $this->db->query($sql, $fields);
+        } catch (DbQueryException $e) {
+            throw new UserStoreException('Ошибка обновления пользователя в базе данных', 0, $e);
+        }
+    }
+
+    /**
+     * @throws UserStoreException
+     */
+    public function addUser(User $user, ?string $password = null): int {
+        $passwordSqlPart = '';
+        if (!empty($password)) {
+            $password = password_hash(PASSWORD_DEFAULT, $password);
+            $passwordSqlPart = ", hashed_password = :password";
+        }
+
+        $sql = "
+            INSERT INTO users SET name = :name, last_name = : last_name, patronymic = : patronymic,
+                email = :email, phone = :phone, path_to_avatar = :path_to_avatar, position = :position,
+                salary = :salary $passwordSqlPart
+        ";
+
+        $fields = array(
+                'name' => $user->name,
+                'last_name' => $user->lastName,
+                'patronymic' => $user->patronymic,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'path_to_avatar' => $user->pathToAvatar,
+                'position' => $user->position,
+                'salary' => $user->salary,
+        );
+
+        if (!empty($password)) {
+            $fields['password'] = $password;
+        }
+
+        try {
+            $this->db->query($sql, $fields);
+            return $this->db->lastInsertId();
+        } catch (DbQueryException $e) {
+            throw new UserStoreException('Ошибка добавления пользователя в базу данных', 0, $e);
+        }
+    }
 }

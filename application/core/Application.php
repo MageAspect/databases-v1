@@ -53,7 +53,11 @@ class Application {
         } catch (ControllerException | ActionException | RouteException $e) {
             $this->view->render($this->errorPageFactory->createPage404());
         } catch (Exception $e) {
-            $this->view->render($this->errorPageFactory->createPage500());
+            $messages = $e->getMessage() . "\n\n";
+            while ($e = $e->getPrevious()) {
+                $messages .= $e->getMessage()  . "\n\n";
+            }
+            $this->view->render($this->errorPageFactory->createPage500($messages));
         }
     }
 

@@ -23,14 +23,14 @@ class ErrorPageFactory {
         return $page;
     }
 
-    public function createPage500(): Page {
+    public function createPage500(string $error): Page {
         $page = new Page();
         $page->headerFile = $_SERVER['DOCUMENT_ROOT'] . '/application/templates/authHeader.php';
         $page->contentFile = $_SERVER['DOCUMENT_ROOT'] . '/application/templates/rawError.php';
         $page->footerFile = $_SERVER['DOCUMENT_ROOT'] . '/application/templates/authFooter.php';
         $page->responseCode = 500;
         $page->data = array(
-                'errorText' => 'Что-то пошло не так :|'
+                'errorText' => $error ?: 'Что-то пошло не так :|'
         );
 
         return $page;
