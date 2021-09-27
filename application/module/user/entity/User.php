@@ -5,7 +5,7 @@ namespace application\module\user\entity;
 
 
 class User {
-    public int $id;
+    public int $id = 0;
     public string $login = '';
     public string $email = '';
     public string $name = '';

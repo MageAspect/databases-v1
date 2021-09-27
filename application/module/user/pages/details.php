@@ -136,7 +136,7 @@ $canReadSecurityFields = $PAGE_DATA['can-read-security-fields'];
                                     <div class="main-grid-table-row">
                                         <div class="main-grid-table-row-column"><?= $journalEntry->position ?></div>
                                         <div class="main-grid-table-row-column">
-                                            <?= $journalEntry->department ? $journalEntry->department->name : 'Подразделение удалено' ?>
+                                            <?= $journalEntry->department ? $journalEntry->department->name : '—' ?>
                                         </div>
                                         <?php if ($canReadSecurityFields): ?>
                                             <div class="main-grid-table-row-column">

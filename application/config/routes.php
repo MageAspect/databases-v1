@@ -51,6 +51,11 @@ return array(
                 'detailsAction'
         ),
         new Route(
+                '#^users/0/edit$#',
+                \application\module\user\controller\UserController::class,
+                'addAction'
+        ),
+        new Route(
                 '#^users/(?P<id>\d+)/edit$#',
                 \application\module\user\controller\UserController::class,
                 'editAction'
@@ -59,5 +64,11 @@ return array(
                 '#^users/(?P<id>\d+)/delete$#',
                 \application\module\user\controller\UserController::class,
                 'deleteAction'
+        ),
+
+        new Route(
+                '#^admin/sql-query#',
+                \application\module\admin\sqlQuery\SqlQueryController::class,
+                'sqlAction'
         ),
 );

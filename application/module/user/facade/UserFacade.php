@@ -96,11 +96,35 @@ class UserFacade {
     /**
      * @throws UserFacadeException
      */
+    public function getUserByLogin(string $login): User {
+        try {
+            return $this->userStore->getUserByLogin($login);
+        } catch (UserNotFoundException $e) {
+            throw new UserNotFoundFacadeException();
+        } catch (UserStoreException $e) {
+            throw new UserFacadeException('Не удалось получить пользователя');
+        }
+    }
+
+    /**
+     * @throws UserFacadeException
+     */
     public function updateUser(User $user, ?string $password = null): void {
         try {
             $this->userStore->updateUser($user, $password);
         } catch (UserStoreException $e) {
             throw new UserFacadeException('Не удалось обновить пользователя');
+        }
+    }
+
+    /**
+     * @throws UserFacadeException
+     */
+    public function deleteUser(int $userId): void {
+        try {
+            $this->userStore->deleteUser($userId);
+        } catch (UserStoreException $e) {
+            throw new UserFacadeException('Не удалось удалить пользователя');
         }
     }
 

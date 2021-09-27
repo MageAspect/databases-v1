@@ -30,7 +30,7 @@ $errors = $PAGE_DATA['errors'];
                 <div class="main-content-header-title_desc"><?= $PAGE_TITLE ?></div>
             </div>
             <div class="main-content-header-buttons">
-                <button class="button button-back button-second">
+                <button class="button button-back button-second" onclick="location = '/users/'">
                     <span>К списку</span>
                 </button>
                 <button class="button button-save button-save-user">
@@ -54,7 +54,7 @@ $errors = $PAGE_DATA['errors'];
                                    class="user-profile-additional-info-avatar-buttons-edit button button-second button-edit">
                                 Заменить
                             </label>
-                            <input id="user-avatar" name="avatar" type="file" style="display: none">
+                            <input id="user-avatar" name="user-avatar" type="file" style="display: none" accept=".jpg, .jpeg, .png">
                             <button class="user-profile-delete-avatar user-profile-additional-info-avatar-buttons-edit button button-second button-delete">
                                 Удалить
                             </button>
@@ -62,6 +62,7 @@ $errors = $PAGE_DATA['errors'];
                             <input type="hidden" name="submitted">
                         </div>
                     </div>
+                    <?php if ($user->id > 0): ?>
                     <div class="user-profile-additional-info-block">
                         <div class="user-profile-additional-info-block-title">Состоит в отделах:</div>
                         <div class="user-profile-additional-info-block-fields ">
@@ -89,6 +90,7 @@ $errors = $PAGE_DATA['errors'];
                             </div>
                         </div>
                     </div>
+                    <?php endif; ?>
                 </div>
                 <div class="user-profile-contact-info">
                     <div class="user-profile-contact-info-block user-profile-contact-info-block-edit">
@@ -113,6 +115,20 @@ $errors = $PAGE_DATA['errors'];
                                        value="<?= $user->patronymic ?>"/>
                             </div>
                             <?php if ($canEditWorkFields): ?>
+                                <div class="user-profile-contact-info-block-fields-item">
+                                    <div class="user-profile-contact-info-block-fields-item-title">Логин:</div>
+                                    <input name="user-login"
+                                           class="user-profile-contact-info-block-fields-item-value user-profile-contact-info-block-edit-fields-item-input"
+                                           value="<?= $user->login ?>"/>
+                                </div>
+                                <?php if ($user->id <= 0): ?>
+                                    <div class="user-profile-contact-info-block-fields-item">
+                                        <div class="user-profile-contact-info-block-fields-item-title">Пароль:</div>
+                                        <input name="user-password" type="password"
+                                               class="user-profile-contact-info-block-fields-item-value user-profile-contact-info-block-edit-fields-item-input"
+                                               />
+                                    </div>
+                                <?php endif; ?>
                                 <div class="user-profile-contact-info-block-fields-item">
                                     <div class="user-profile-contact-info-block-fields-item-title">Должность:</div>
                                     <input name="user-position"
@@ -152,7 +168,8 @@ $errors = $PAGE_DATA['errors'];
                         </div>
 
                     </div>
-                    <div class="user-profile-contact-info-block user-profile-contact-info-block-edit">
+                    <?php if ($user->id > 0): ?>
+                        <div class="user-profile-contact-info-block user-profile-contact-info-block-edit">
                         <div class="user-profile-contact-info-block-title">Смена пароля</div>
                         <div class="user-profile-contact-info-block-fields">
                             <div class="user-profile-contact-info-block-fields-item">
@@ -163,7 +180,6 @@ $errors = $PAGE_DATA['errors'];
                             </div>
                         </div>
                     </div>
-
                     <div class="user-profile-contact-info-block">
                         <div class="user-profile-contact-info-block-title">Журнал продвижения по службе</div>
                         <div class="user-profile-contact-info-block-fields">
@@ -184,7 +200,7 @@ $errors = $PAGE_DATA['errors'];
                                     <div class="main-grid-table-row">
                                         <div class="main-grid-table-row-column"><?= $journalEntry->position ?></div>
                                         <div class="main-grid-table-row-column">
-                                            <?= $journalEntry->department ? $journalEntry->department->name : 'Подразделение удалено' ?>
+                                            <?= $journalEntry->department ? $journalEntry->department->name : '—' ?>
                                         </div>
                                         <?php if ($canReadSecurityFields): ?>
                                             <div class="main-grid-table-row-column">
@@ -203,6 +219,7 @@ $errors = $PAGE_DATA['errors'];
                             </div>
                         </div>
                     </div>
+                    <?php endif; ?>
                 </div>
             <?php else: ?>
                 <div class="application-content-error"><?= array_shift($errors) ?></div>
@@ -215,6 +232,10 @@ $errors = $PAGE_DATA['errors'];
     class UserProfileForm {
         constructor() {
             this.form = document.querySelector('form.user-profile');
+            this.avatarContainer = this.form.querySelector('.user-profile-additional-info-avatar-center .user-profile-additional-info-avatar');
+            this.deleteUserAvatarButton = this.form.querySelector('button.user-profile-delete-avatar');
+            this.deleteAvatarInput = this.form.querySelector('[name="delete-user-avatar"]');
+            this.editAvatarInput = this.form.querySelector('[name="user-avatar"]');
         }
 
         initEvents() {
@@ -224,15 +245,23 @@ $errors = $PAGE_DATA['errors'];
                 this.form.submit();
             });
 
-            let deleteUserAvatarButton = this.form.querySelector('button.user-profile-delete-avatar');
-            deleteUserAvatarButton.addEventListener('click', (e) => {
+            this.deleteUserAvatarButton.addEventListener('click', (e) => {
                 e.preventDefault();
-                let deleteAvatarInput = this.form.querySelector('[name="delete-user-avatar"]')
-                deleteAvatarInput.value = 1;
+                this.deleteAvatarInput.value = 1;
 
-                let avatarContainer = this.form.querySelector('.user-profile-additional-info-avatar-center .user-profile-additional-info-avatar');
-                avatarContainer.style.backgroundImage = "url('/public/img/upic-user.svg')";
+                this.avatarContainer.style.backgroundImage = "url('/public/img/upic-user.svg')";
             });
+
+            this.editAvatarInput.addEventListener('change', (e) => {
+                let fileList = e.target.files;
+                const reader = new FileReader();
+                reader.addEventListener('load', (e) => {
+                    this.avatarContainer.style.backgroundImage = "url('" + e.target.result + "')";
+                });
+                reader.readAsDataURL(fileList[0]);
+                this.deleteAvatarInput.value = 0;
+            })
+
         }
 
         submit() {

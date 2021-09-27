@@ -200,20 +200,39 @@ class UserStore {
     /**
      * @throws UserStoreException
      */
+    public function deleteUser(int $userId): void {
+        try {
+            $this->db->query(
+                    "
+                    DELETE FROM users WHERE id = :id
+                ",
+                    array(
+                            'id' => $userId
+                    )
+            );
+        } catch (DbQueryException $e) {
+            throw new UserStoreException('Ошибка удаления пользователя из базы данных', 0, $e);
+        }
+    }
+
+    /**
+     * @throws UserStoreException
+     */
     public function addUser(User $user, ?string $password = null): int {
         $passwordSqlPart = '';
         if (!empty($password)) {
-            $password = password_hash(PASSWORD_DEFAULT, $password);
+            $password = password_hash($password, PASSWORD_DEFAULT);
             $passwordSqlPart = ", hashed_password = :password";
         }
 
         $sql = "
-            INSERT INTO users SET name = :name, last_name = : last_name, patronymic = : patronymic,
+            INSERT INTO users SET name = :name, login = :login, last_name = :last_name, patronymic = :patronymic,
                 email = :email, phone = :phone, path_to_avatar = :path_to_avatar, position = :position,
                 salary = :salary $passwordSqlPart
         ";
 
         $fields = array(
+                'login' => $user->login,
                 'name' => $user->name,
                 'last_name' => $user->lastName,
                 'patronymic' => $user->patronymic,
@@ -232,6 +251,7 @@ class UserStore {
             $this->db->query($sql, $fields);
             return $this->db->lastInsertId();
         } catch (DbQueryException $e) {
+            var_dump($e);
             throw new UserStoreException('Ошибка добавления пользователя в базу данных', 0, $e);
         }
     }
