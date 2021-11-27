@@ -33,7 +33,10 @@ class UserCarrierJournalFacade {
             $dbEntries = $this->db->query(
                     "
                     SELECT id, user_id, department_id, salary, position, start_datetime, end_datetime, 
-                           DATEDIFF(IF(end_datetime IS NULL, NOW(), end_datetime), start_datetime) as days_in_work
+                           extract(
+                               day from (CASE WHEN end_datetime is null THEN now()::timestamp(0) ELSE end_datetime END) 
+                                        - start_datetime
+                           ) AS days_in_work
                     FROM users_career_journal
                     WHERE user_id = :user_id
                 ",

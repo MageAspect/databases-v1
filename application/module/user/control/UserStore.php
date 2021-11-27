@@ -218,17 +218,12 @@ class UserStore {
     /**
      * @throws UserStoreException
      */
-    public function addUser(User $user, ?string $password = null): int {
-        $passwordSqlPart = '';
-        if (!empty($password)) {
-            $password = password_hash($password, PASSWORD_DEFAULT);
-            $passwordSqlPart = ", hashed_password = :password";
-        }
+    public function addUser(User $user, string $password): int {
+        $password = password_hash($password, PASSWORD_DEFAULT);
 
         $sql = "
-            INSERT INTO users SET name = :name, login = :login, last_name = :last_name, patronymic = :patronymic,
-                email = :email, phone = :phone, path_to_avatar = :path_to_avatar, position = :position,
-                salary = :salary $passwordSqlPart
+            INSERT INTO users (login, hashed_password, email, name, last_name, patronymic, path_to_avatar, position, phone, salary) 
+                       VALUES (:login, :hashed_password, :email, :name, :last_name, :patronymic, :path_to_avatar, :position, :phone, :salary) 
         ";
 
         $fields = array(
@@ -241,11 +236,8 @@ class UserStore {
                 'path_to_avatar' => $user->pathToAvatar,
                 'position' => $user->position,
                 'salary' => $user->salary,
+                'hashed_password' => $password,
         );
-
-        if (!empty($password)) {
-            $fields['password'] = $password;
-        }
 
         try {
             $this->db->query($sql, $fields);

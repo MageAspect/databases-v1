@@ -131,9 +131,9 @@ class UserFacade {
     /**
      * @throws UserFacadeException
      */
-    public function addUser(User $user, ?string $password = null): int {
+    public function addUser(User $user, string $password): int {
         try {
-            $this->userStore->addUser($user, $password);
+            return $this->userStore->addUser($user, $password);
         } catch (UserStoreException $e) {
             throw new UserFacadeException('Не удалось добавить пользователя');
         }

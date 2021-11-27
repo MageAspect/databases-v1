@@ -23,9 +23,7 @@ $slqResults = $PAGE_DATA['sql-results'];
         </div>
         <form method="post" class="sql">
             <div class="sql-expression">
-                    <textarea name="sql" rows="15">
-                        <?php echo $_POST['sql'] ?>
-                    </textarea>
+                    <textarea name="sql" rows="15"><?php echo $_POST['sql'] ?></textarea>
                 <button class="button  sql-expression-button">Выполнить</button>
             </div>
             <div class="sql-output">
