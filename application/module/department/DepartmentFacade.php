@@ -121,7 +121,8 @@ class DepartmentFacade {
     public function getUserDepartments(int $userId): array {
         try {
             $dbDepartmentsIds = $this->db->query(
-                    "SELECT department_id  FROM user_department WHERE user_id in (:id)",
+                    "SELECT department_id  FROM user_department WHERE user_id in (:id) 
+                         UNION SELECT id as department_id FROM departments WHERE head_id = :id",
                     array('id' => $userId)
             );
 

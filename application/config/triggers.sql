@@ -5,12 +5,21 @@ DECLARE
     lastDepartmentId                    INTEGER;
     DECLARE lastUserCarrierJournalEntry INTEGER;
 BEGIN
-    SELECT department_id
+    SELECT id
     INTO lastDepartmentId
-    FROM user_department
-    WHERE user_id = NEW.id
-    ORDER BY department_id DESC
+    FROM departments
+    WHERE head_id = NEW.id
+    ORDER BY id DESC
     LIMIT 1;
+
+    IF (lastDepartmentId is null) THEN
+        SELECT department_id
+        INTO lastDepartmentId
+        FROM user_department
+        WHERE user_id = NEW.id
+        ORDER BY department_id DESC
+        LIMIT 1;
+    END IF;
 
     IF (NEW.position != OLD.position OR NEW.salary != OLD.salary) THEN
         SELECT id
@@ -31,12 +40,6 @@ BEGIN
 END;
 $$
     LANGUAGE 'plpgsql';
-
-CREATE TRIGGER collect_user_carrier_journal_on_update
-    AFTER UPDATE
-    ON users
-    FOR EACH ROW
-EXECUTE PROCEDURE collect_user_carrier_journal_on_update();
 
 CREATE or REPLACE FUNCTION collect_user_carrier_journal_on_insert()
     RETURNS trigger AS
@@ -65,3 +68,15 @@ BEGIN
 END;
 $$
     LANGUAGE 'plpgsql';
+
+CREATE TRIGGER collect_user_carrier_journal_on_update
+    AFTER UPDATE
+    ON users
+    FOR EACH ROW
+EXECUTE PROCEDURE collect_user_carrier_journal_on_update();
+
+CREATE TRIGGER collect_user_carrier_journal_on_insert
+    AFTER INSERT
+    ON users
+    FOR EACH ROW
+EXECUTE PROCEDURE collect_user_carrier_journal_on_insert();

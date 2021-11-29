@@ -105,7 +105,7 @@ class UserController extends AuthorizedController {
                 $user->email = $_POST['user-email'];
                 $user->phone = $_POST['user-phone'];
 
-                if (isset($_FILES['user-avatar'])) {
+                if (!empty($_FILES['user-avatar']['tmp_name'])) {
                     $user->pathToAvatar = $this->uploadAvatar($_FILES['user-avatar']);
                 }
 
